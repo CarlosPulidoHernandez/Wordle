@@ -15,7 +15,8 @@ import edu.uclm.esi.wordlesc.ws.WrapperSession;
 public class RemoteManager {
 	
 	private JSONObject configuration;
-	private ConcurrentHashMap<String, WrapperSession> wrapperSessions = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, WrapperSession> wrapperSessionsByHttp = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, WrapperSession> wrapperSessionsByWS = new ConcurrentHashMap<>();
 
 	private RemoteManager() {
 		try {
@@ -27,11 +28,11 @@ public class RemoteManager {
 	}
 	
 	public void addWrapperSession(WrapperSession wrapperSession) {
-		this.wrapperSessions.put(wrapperSession.getUaSessionId(), wrapperSession);
+		this.wrapperSessionsByHttp.put(wrapperSession.getUaSessionId(), wrapperSession);
 	}
 	
 	public WrapperSession findWrapperSession(String httpSessionId) {
-		return this.wrapperSessions.get(httpSessionId);
+		return this.wrapperSessionsByHttp.get(httpSessionId);
 	}
 	
 	private static class LocalManagerHolder {
@@ -72,7 +73,10 @@ public class RemoteManager {
 	}
 
 	public WrapperSession findWrapperSessionByWSId(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.wrapperSessionsByWS.get(id);
+	}
+
+	public void addWrapperSession(String id, WrapperSession wrapperSession) {
+		this.wrapperSessionsByWS.put(id, wrapperSession);
 	}
 }

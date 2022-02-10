@@ -89,6 +89,12 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 				if (data.type=="READY") {
 					self.match(data)
 					self.status("Partida preparada")
+				} else if (data.type=="MOVE") {
+					if (data.player=="A"){
+						self.match().guessesA.push(data.testWord)
+					}else{
+						self.match().guessesB.push(data.testWord)
+					}
 				}
 			}
 		}

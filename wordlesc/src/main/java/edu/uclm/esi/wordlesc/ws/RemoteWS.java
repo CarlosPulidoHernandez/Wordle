@@ -17,8 +17,7 @@ import edu.uclm.esi.wordlesc.services.MatchService;
 @Component
 public class RemoteWS extends TextWebSocketHandler {
 	
-	@Autowired
-	private MatchService matchService;
+	private static MatchService matchService;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -27,7 +26,7 @@ public class RemoteWS extends TextWebSocketHandler {
 		
 		WrapperSession wrapperSession = RemoteManager.get().findWrapperSession(httpSessionId);
 		wrapperSession.setWebSocketSession(session);
-		RemoteManager.get().addWrapperSession(wrapperSession);
+		RemoteManager.get().addWrapperSession(session.getId(), wrapperSession);
 	}
 	
 	@Override
@@ -37,9 +36,9 @@ public class RemoteWS extends TextWebSocketHandler {
 		String idMatch = jso.getString("idMatch");
 		String testWord = jso.getString("testWord");
 		String httpSessionId = RemoteManager.get().findWrapperSessionByWSId(session.getId()).getUaSessionId();
-		//Match match = this.matchService.find(idMatch);
-		//match.guess(playerA, testWord);
-		
+		Match match = matchService.find(idMatch);
+		match.guess(httpSessionId, testWord);
+		match.actualizarClientes(session.getId(), testWord);
 	}
 	
 	protected String getHttpSessionId(WebSocketSession session) {
@@ -51,6 +50,11 @@ public class RemoteWS extends TextWebSocketHandler {
 			return httpSessionId;
 		}
 		return null;
+	}
+	
+	@Autowired
+	public static void setMatchService(MatchService matchService) {
+		RemoteWS.matchService = matchService;
 	}
 }
 

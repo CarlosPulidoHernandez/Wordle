@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -75,8 +76,24 @@ public class Match {
 				put("playerA", this.playerA).
 				put("playerB", this.playerB).
 				put("length", this.word.length()).
-				put("guessesA", "[]").
-				put("guessesB", "[]");
+				put("guessesA", new JSONArray()).
+				put("guessesB", new JSONArray());
+		try {
+			TextMessage message = new TextMessage(jso.toString());
+			this.webSocketSessionA.sendMessage(message);
+			this.webSocketSessionB.sendMessage(message);
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}
+	}
+
+	public void actualizarClientes(String wsIdJugador, String testWord) {
+		String player = this.webSocketSessionA.getId().equals(wsIdJugador) ? "A" : "B";
+		
+		JSONObject jso = new JSONObject().
+				put("type", "MOVE").
+				put("player", player).
+				put("testWord", testWord);
 		try {
 			TextMessage message = new TextMessage(jso.toString());
 			this.webSocketSessionA.sendMessage(message);
