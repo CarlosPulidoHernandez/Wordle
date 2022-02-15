@@ -1,0 +1,15 @@
+{
+	"home" : "http://localhost",
+	"login" : "?ojr=login",
+	
+	"email" : {
+		"host" : "smtp.gmail.com",
+		"startTTLS" : "true",
+		"port" : "587",
+		"sender" : "usuario@gmail.com",
+		"serverUser" : "usuario@gmail.com",
+		"auth" : "true",
+		"pwd" : "******",
+		"fallback" : "false"
+	}
+}

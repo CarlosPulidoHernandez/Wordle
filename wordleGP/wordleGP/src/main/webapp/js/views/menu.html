@@ -1,0 +1,47 @@
+<div class="oj-hybrid-applayout-page">
+  <div class="oj-applayout-fixed-top">
+    <header role="banner" class="oj-hybrid-applayout-header">
+      <oj-module config="[[headerConfig]]"></oj-module>
+    </header>
+  </div>
+  <div class="oj-applayout-content">
+    <div role="main" class="oj-hybrid-applayout-content">
+      <div class="oj-hybrid-padding">
+        <h1>Menú de opciones</h1>
+        
+        <div data-bind="html : status" style="color : blue"></div>
+        <div data-bind="html : error" style="color : red"></div>
+        
+        <div>
+        	<button data-bind="click : playMatch">Jugar partida</button>
+        </div>
+        <!-- ko with : match -->
+	        <div>
+	        	Match Id: <div data-bind="html : id"></div>
+	        </div>
+	        <div>
+	        	Player A: <div data-bind="html : playerA"></div>
+	        </div>
+	        <div>
+	        	Player B: <div data-bind="html : playerB"></div>
+	        </div>
+	        <div>
+	        	<div>
+	        		<label>Tablero local</label>
+	        	</div>
+	        	<!-- ko foreach : guessesA -->
+	        		
+	        	<!-- /ko -->
+	        	
+        		<input type="text" data-bind="value : $parents[$parents.length-1].testWord">
+        		<button data-bind="click : function() { $parents[$parents.length-1].guess() }">Probar</button>
+        		
+	        	<div>
+	        		<label>Tablero remoto</label>
+	        	</div>
+	        </div>
+	    <!-- /ko -->
+      </div>
+    </div>
+  </div>
+</div>
