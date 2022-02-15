@@ -53,7 +53,7 @@ public class RemoteWS extends TextWebSocketHandler {
 	}
 	
 	@Autowired
-	public static void setMatchService(MatchService matchService) {
+	public void setMatchService(MatchService matchService) {
 		RemoteWS.matchService = matchService;
 	}
 }

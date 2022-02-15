@@ -51,7 +51,7 @@ public class Match {
 			this.guessesA.add(state);
 		} else {
 			this.guessesB.add(state);
-		}
+		}	
 	}
 
 	public String getPlayerA() {
