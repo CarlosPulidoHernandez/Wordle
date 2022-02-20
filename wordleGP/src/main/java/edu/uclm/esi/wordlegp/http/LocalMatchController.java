@@ -45,7 +45,7 @@ public class LocalMatchController {
 		Client client = (Client) session.getAttribute("client");
 		
 		JSONObject response = client.sendGet(url + "match/play?uaSession=" + session.getId());
-		String word = "TRUCO";
+		String word = this.matchService.getRandomWord();
 		if (response==null)
 			response = client.sendGet(url + "match/newMatch/" + word + "?uaSession=" + session.getId());
 		
