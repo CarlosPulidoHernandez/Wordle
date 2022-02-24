@@ -2,6 +2,7 @@ package edu.uclm.esi.wordlegp.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
@@ -40,16 +41,17 @@ public class LocalMatchService {
 	}
 
 	public String getRandomWord() {
-		List<Word> todas = this.wordDAO.findAll();
+		/*List<Word> todas = this.wordDAO.findAll();
 		for (int i=0; i<todas.size(); i++) {
 			Word word = todas.get(i);
 			word.setPosicion(i+1);
 			wordDAO.save(word);
-		}
+		}*/
 		
-		long n = this.wordDAO.count();
+		int n = (int) this.wordDAO.count();
+		int posicion = new Random().nextInt(n-1);
 		
-		Optional<Word> optWord = this.wordDAO.findById(788);
+		Optional<Word> optWord = this.wordDAO.findByPosicion(posicion);
 		if (optWord.isPresent())
 			return optWord.get().getPalabra();
 		return null;
