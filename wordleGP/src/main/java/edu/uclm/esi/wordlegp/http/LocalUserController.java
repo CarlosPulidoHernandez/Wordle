@@ -30,7 +30,7 @@ public class LocalUserController {
 	private LocalUserService userService;
 	
 		@PutMapping("/register")
-		public void register(Map<String, Object> info) {
+		public void register(@RequestBody Map<String, Object> info) {
 			try {
 				JSONObject jso = new JSONObject(info);
 				String userName = jso.getString("userName");
@@ -44,7 +44,7 @@ public class LocalUserController {
 					throw new Exception("Las contraseñas no coinciden");
 				if(pwd1.length()<5)
 					throw new Exception("La contraseña ha de tener 5 caracteres");
-				userService.register(jso);
+				this.userService.register(jso);
 			} catch (Exception e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}

@@ -18,15 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.uclm.esi.wordlesc.services.UserService;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
 
 	@Autowired
-	/*private LocalUserService userService;*/
+	private UserService userService;
 	
-		@PutMapping("/register")
-		public void register(Map<String, Object> info) {
+		@PostMapping("/register")
+		public void register(@RequestBody Map<String, Object> info) {
 			try {
 				JSONObject jso = new JSONObject(info);
 				String userName = jso.getString("userName");
@@ -34,17 +36,16 @@ public class UserController {
 				String pwd2 = jso.getString("pwd2");
 				String email = jso.getString("email");
 				
-				//userService.register(userName, pwd1, email);
-				
-				if(userName.length()<5)
+				if(userName.length()<4)
 					throw new Exception("El nombre de usuario ha de tener 5 caracteres");
 				if(!pwd1.equals(pwd2))
 					throw new Exception("Las contraseñas no coinciden");
 				if(pwd1.length()<5)
 					throw new Exception("La contraseña ha de tener 5 caracteres");
+				
+				this.userService.register(jso);
 			} catch (Exception e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
-			//userService.register(null)
 		}
 }
