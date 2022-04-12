@@ -40,7 +40,7 @@ public class LocalUserController {
 		}
 	}
 	
-	@PostMapping("/login")
+	@PutMapping("/login")
 	public void login(@RequestBody Map<String, Object> info) {
 		try {
 			JSONObject jso = new JSONObject(info);

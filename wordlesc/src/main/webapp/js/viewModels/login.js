@@ -34,7 +34,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			var data = {
 				data : JSON.stringify(info),
 				url : "user/login",
-				type : "post",
+				type : "put",
 				contentType : 'application/json',
 				success : function(response) {
 					app.router.go( { path : "menu"} );

@@ -7,6 +7,7 @@ import javax.persistence.Lob;
 
 @Entity
 public class User {
+
 	@Id
 	private String userName;
 	private String email;
@@ -14,16 +15,16 @@ public class User {
 	@Column(columnDefinition = "LONGTEXT")
 	private String pwd;
 
-	public void setUserName(String userName) {
+	public void setUsername(String userName) {
 		this.userName = userName;
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = email;		
 	}
 
 	public void setPwd(String pwd) {
-		this.pwd = org.apache.commons.codec.digest.DigestUtils.sha512Hex(pwd);
+		this.pwd = org.apache.commons.codec.digest.DigestUtils.sha512Hex(pwd);		
 	}
 
 	public String getUserName() {
@@ -36,7 +37,5 @@ public class User {
 
 	public String getPwd() {
 		return pwd;
-	}
-
-	
+	}	
 }
