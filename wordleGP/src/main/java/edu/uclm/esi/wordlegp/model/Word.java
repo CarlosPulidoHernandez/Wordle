@@ -15,18 +15,23 @@ public class Word {
 	public Integer getPalabraId() {
 		return palabraId;
 	}
+	
 	public void setPalabraId(Integer palabraId) {
 		this.palabraId = palabraId;
 	}
+	
 	public String getPalabra() {
 		return palabra;
 	}
+	
 	public void setPalabra(String palabra) {
 		this.palabra = palabra;
 	}
+	
 	public Integer getPosicion() {
 		return posicion;
 	}
+	
 	public void setPosicion(Integer posicion) {
 		this.posicion = posicion;
 	}

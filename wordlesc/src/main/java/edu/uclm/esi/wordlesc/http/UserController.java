@@ -18,28 +18,26 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.uclm.esi.wordlesc.services.UserService;
 
-
 @RestController
 @RequestMapping("user")
 public class UserController {
-	
 	@Autowired
 	private UserService userService;
 	
 	@PostMapping("/register")
-	public void register(@RequestBody Map<String, Object> info){
+	public void register(@RequestBody Map<String, Object> info) {
 		try {
 			JSONObject jso = new JSONObject(info);
 			String userName = jso.getString("userName");
 			String pwd1 = jso.getString("pwd1");
 			String pwd2 = jso.getString("pwd2");
-			String email = jso.getString("email");	
+			String email = jso.getString("email");
 			if (userName.length()<5)
-				throw new Exception("El nombre de usuario debe tener 5 caracteres o más");
+				throw new Exception("El nombre de usuario ha de tener 5 caracteres o más");
 			if (!pwd1.equals(pwd2))
 				throw new Exception("Las contraseñas no coinciden");
 			if (pwd1.length()<5)
-				throw new Exception("La contraseña debe tener 5 caracteres o más");
+				throw new Exception("La contraseña tiene que tener 5 caracteres o más");
 			this.userService.register(jso);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

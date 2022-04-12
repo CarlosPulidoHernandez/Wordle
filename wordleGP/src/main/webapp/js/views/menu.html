@@ -25,21 +25,35 @@
 	        <div>
 	        	Player B: <div data-bind="html : playerB"></div>
 	        </div>
-	        <div>
-	        	<div>
-	        		<label>Tablero local</label>
-	        	</div>
-	        	<!-- ko foreach : guessesA -->
-	        		
+      		<input type="text" data-bind="value : $parents[$parents.length-1].testWord">
+      		<button data-bind="click : function() { $parents[$parents.length-1].guess() }">Probar</button>       			
+	        <table>
+	        	<tr>
+	        		<th>Tablero local</th>
+	        		<th>Tablero rival</th>
+	        	</tr>
+	        	<!-- ko if : $parent.mensajeFinal() -->
+	        		<tr>
+	        			<td colspan="2" data-bind="html : $parent.mensajeFinal" style="color : green">
+	        		</tr>
 	        	<!-- /ko -->
-	        	
-        		<input type="text" data-bind="value : $parents[$parents.length-1].testWord">
-        		<button data-bind="click : function() { $parents[$parents.length-1].guess() }">Probar</button>
-        		
-	        	<div>
-	        		<label>Tablero remoto</label>
-	        	</div>
-	        </div>
+        		<tr>
+        			<td>
+ 			        	<!-- ko foreach : guessesA -->
+ 			        		<div>
+				        		<span data-bind="html : $data" style="font-size:18px;"></span>
+				        	</div>
+	        			<!-- /ko -->			        		
+		        	</td>
+		        	<td>
+		        		<!-- ko foreach : guessesB -->
+		        			<div>
+			        			<span data-bind="html : $data" style="font-size:18px;"></span>
+			        		</div>
+	        			<!-- /ko -->
+		        	</td>
+	        	</tr>
+	        </table>
 	    <!-- /ko -->
       </div>
     </div>

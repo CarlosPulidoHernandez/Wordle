@@ -63,6 +63,5 @@ public class LocalMatchController {
 		String url = LocalManager.get().getConfiguration().getString("SC");
 		
 		client.sendPost(url + "match/guess?uaSession=" + session.getId(), jso);
-		
 	}
 }

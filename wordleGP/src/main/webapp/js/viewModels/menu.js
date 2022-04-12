@@ -7,7 +7,9 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			self.status = ko.observable(null)
 			self.error = ko.observable(null)
 			
-			self.match = ko.observable(null)
+			self.mensajeFinal = ko.observable(null)
+			
+			self.match = ko.observable(new Match(ko))
 			self.testWord = ko.observable(null)
 						
 			// Header Config
@@ -52,7 +54,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		
 		guess() {
 			let mensaje = {
-				idMatch : this.match().id,
+				idMatch : this.match().id(),
 				type : "GUESS",
 				game : "WORDLE",
 				testWord : this.testWord()
@@ -62,13 +64,18 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		
 		playMatch() {
 			let self = this;
+			self.match(new Match(ko))
+			self.mensajeFinal(null)
 			
 			let data = {
 				url : "match/play",
 				type : "get",
 				contentType : 'application/json',
 				success : function(response) {
-					self.match(response)
+					self.match().id(response.id)
+					self.match().miRol = response.playerB ? "B" : "A"
+					self.match().playerA(response.playerA)
+					self.match().playerB(response.playerB)
 				},
 				error : function(response) {
 					self.error(response);
@@ -87,13 +94,24 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			this.ws.onmessage = function(event) {
 				let data = JSON.parse(event.data)
 				if (data.type=="READY") {
-					self.match(data)
+					self.match().id(data.id)
+					self.match().playerB(data.playerB)
 					self.status("Partida preparada")
-				} else if (data.type=="MOVE") {
-					if (data.player=="A"){
-						self.match().guessesA.push(data.testWord)
-					}else{
-						self.match().guessesB.push(data.testWord)
+				} else if (data.type=="UNO HA PUESTO, OYE") {
+					if (data.quien=="A" && self.match().miRol=="A")
+						self.match().guessesA.push(dibujar(data))
+					else if (data.quien=="A" && self.match().miRol=="B")
+						self.match().guessesB.push(dibujar(data))
+					else if (data.quien=="B" && self.match().miRol=="A")
+						self.match().guessesB.push(dibujar(data))
+					else
+						self.match().guessesA.push(dibujar(data))
+						
+					if (data.winner) {
+						if (data.winner==self.match().miRol)
+							self.mensajeFinal("¡¡Has ganado!! 😁")
+						else
+							self.mensajeFinal("Ohhh, has perdido 😞")
 					}
 				}
 			}
@@ -106,6 +124,23 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		transitionCompleted() {
 			// Implement if needed
 		};
+	}
+	
+	function dibujar(data) {
+		let word = data.testWord
+		let state = data.state
+		let r = "";
+		for (let i=0; i<word.length; i++) {
+			r = r + "<span style='color :"
+			if (state[i]=="M")
+				r = r + "green'>"
+			else if (state[i]=="H")
+				r = r + "orange'>"
+			else if (state[i]=="V")
+				r = r + "red'>"
+			r = r + word[i] + "</span>"
+		}
+		return r
 	}
 
 	return MenuViewModel;

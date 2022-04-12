@@ -45,13 +45,14 @@ public class Match {
 
 	public void guess(String player, String test) {
 		test = test.toUpperCase();
+		
 		Guess guess = new Guess(this.word, test);
 		String state = guess.getState();
 		if (player.equals(this.playerA)) {
 			this.guessesA.add(state);
 		} else {
 			this.guessesB.add(state);
-		}	
+		}
 	}
 
 	public String getPlayerA() {
@@ -68,6 +69,16 @@ public class Match {
 	
 	public List<String> getGuessesB() {
 		return guessesB;
+	}
+	
+	private String getWinner(String quien, String testword) {
+		if (testword.equalsIgnoreCase(word)) {
+			if (quien.equals("A"))
+				return "A";
+			else
+				return "B";
+		}
+		return null;
 	}
 	
 	private void matchReady() {
@@ -87,13 +98,17 @@ public class Match {
 		}
 	}
 
-	public void actualizarClientes(String wsIdJugador, String testWord) {
-		String player = this.webSocketSessionA.getId().equals(wsIdJugador) ? "A" : "B";
-		
+	public void actualizarClientes(String wsIdJugador, String testWord, Match match) {
+		String quien = this.webSocketSessionA.getId().equals(wsIdJugador) ? "A" : "B";
+		String winner = match.getWinner(quien, testWord);
+		String state = this.webSocketSessionA.getId().equals(wsIdJugador) 
+				? this.guessesA.get(this.guessesA.size()-1) : this.guessesB.get(this.guessesB.size()-1);
 		JSONObject jso = new JSONObject().
-				put("type", "MOVE").
-				put("player", player).
-				put("testWord", testWord);
+				put("type", "UNO HA PUESTO, OYE").
+				put("quien", quien).
+				put("testWord", testWord).
+				put("state", state).
+				put("winner", winner);
 		try {
 			TextMessage message = new TextMessage(jso.toString());
 			this.webSocketSessionA.sendMessage(message);

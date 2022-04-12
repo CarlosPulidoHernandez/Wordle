@@ -14,7 +14,13 @@ public class LocalUserService {
 		String url = LocalManager.get().getConfiguration().getString("SC");
 		url = url + "/user/register";
 		return client.sendPost(url, jso);
-		
+	}
+	
+	public JSONObject login(JSONObject jso) {
+		Client client = new Client();
+		String url = LocalManager.get().getConfiguration().getString("SC");
+		url = url + "/user/login";
+		return client.sendPost(url, jso);
 	}
 
 }

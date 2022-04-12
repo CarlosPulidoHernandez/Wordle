@@ -35,10 +35,12 @@ public class RemoteWS extends TextWebSocketHandler {
 		JSONObject jso = new JSONObject(payload);
 		String idMatch = jso.getString("idMatch");
 		String testWord = jso.getString("testWord");
-		String httpSessionId = RemoteManager.get().findWrapperSessionByWSId(session.getId()).getUaSessionId();
+		
+		WrapperSession wrapperSession = RemoteManager.get().findWrapperSessionByWSId(session.getId());
+		String httpSessionId = wrapperSession.getUaSessionId();
 		Match match = matchService.find(idMatch);
 		match.guess(httpSessionId, testWord);
-		match.actualizarClientes(session.getId(), testWord);
+		match.actualizarClientes(session.getId(), testWord, match);
 	}
 	
 	protected String getHttpSessionId(WebSocketSession session) {
@@ -57,5 +59,3 @@ public class RemoteWS extends TextWebSocketHandler {
 		RemoteWS.matchService = matchService;
 	}
 }
-
-
