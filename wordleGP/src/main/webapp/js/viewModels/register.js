@@ -51,7 +51,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 					},
 					error : function(response) {
 						self.message("");
-						self.error(response.responseJSON.errorMessage);
+						self.error(response.responseText);
 					}
 			};
 			$.ajax(data);    	  

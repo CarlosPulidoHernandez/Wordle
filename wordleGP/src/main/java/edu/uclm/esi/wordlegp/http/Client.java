@@ -14,6 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 public class Client {
@@ -40,23 +41,24 @@ public class Client {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
 		}
 	}
-
-	public JSONObject sendPost(String url, JSONObject payload) {
+	
+	public ResponseEntity<String> sendPost(String url, JSONObject payload) {
 		try(CloseableHttpClient client = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build()) {
 			HttpPost post = new HttpPost(url);
 			try {
 				HttpEntity entity = new StringEntity(payload.toString());
 				post.setEntity(entity);
 				post.setHeader("Accept", "application/json");
-				post.setHeader("Content-type", "application/json");
-				
+				post.setHeader("Content-type", "application/json");				
 				CloseableHttpResponse response = client.execute(post);
 				entity = response.getEntity();
 				String responseText = EntityUtils.toString(entity);
 				if (responseText==null)
 					return null;
 				client.close();
-				return new JSONObject(responseText);
+				if(response.getStatusLine().getStatusCode() == 200) 
+					return new ResponseEntity<>(responseText, HttpStatus.OK);
+				return new ResponseEntity<>(responseText, HttpStatus.BAD_REQUEST);
 			} catch (Exception e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
@@ -64,4 +66,8 @@ public class Client {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
 		}
 	}
+
+	
+	
 }
+

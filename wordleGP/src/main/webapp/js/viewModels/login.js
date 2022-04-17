@@ -5,8 +5,8 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		constructor() {
 			var self = this;
 
-			self.userName = ko.observable("pepe");
-			self.pwd = ko.observable("pepep");
+			self.userName = ko.observable();
+			self.pwd = ko.observable();
 			self.message = ko.observable();
 			self.error = ko.observable();
 			
@@ -40,7 +40,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 					app.router.go( { path : "menu"} );
 				},
 				error : function(response) {
-					self.error(response.responseJSON.errorMessage);
+					self.error(response.responseText);
 				}
 			};
 			$.ajax(data);
