@@ -49,6 +49,11 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		register() {
 			app.router.go( { path : "register" } );
 		}
+		
+		changePassword() {
+			
+		}
+
 
 		connected() {
 			accUtils.announce('Login page loaded.');

@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import edu.uclm.esi.wordlesc.dao.UserRepository;
+import edu.uclm.esi.wordlesc.dao.TokenRepository;
 import edu.uclm.esi.wordlesc.model.User;
+import edu.uclm.esi.wordlesc.model.Email;
+import edu.uclm.esi.wordlesc.model.Token;
 
 
 @Service
@@ -17,6 +21,9 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userDAO;
+	
+	@Autowired
+	private TokenRepository tokenDAO;
 
 	public ResponseEntity<String> register(JSONObject jso) {
 		User user = new User();
@@ -27,15 +34,58 @@ public class UserService {
 		if (optUser.isPresent()) {
 			return new ResponseEntity<>("Nombre de usuario ya registrado", HttpStatus.BAD_REQUEST);
 		}
-		this.userDAO.save(user);
+		this.userDAO.save(user);		
+		Token token = new Token(user.getUserName());
+		this.tokenDAO.save(token);
+		Email smtp=new Email();
+		smtp.send(user.getEmail(), "Bienvenido al sistema", 
+			"Para confirmar, pulse aquí: " +
+			"http://localhost/user/validateAccount/" + token.getId());
 		return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
 	}
 
 	public ResponseEntity<String> login(JSONObject jso) {
-		User user = this.userDAO.findByUserNameAndPwd(jso.getString("name"), org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("pwd")));
-		if (user == null) 
-			return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.BAD_REQUEST);
-		return new ResponseEntity<>(jso.toString(), HttpStatus.OK);
+		String name = jso.getString("name");
+		String pwd = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("pwd"));
+		
+		Optional<User> optUser = this.userDAO.findById(name);
+		if (optUser.isPresent()) {
+			User user = optUser.get();
+			if (!user.getPwd().equals(pwd)) {
+				if(user.getWrongAttempts() < 3) {
+					user.increaseWrongAttempts();
+					this.userDAO.save(user);
+				}
+				return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
+			}else {
+				if (user.getWrongAttempts() == 3)
+					return new ResponseEntity<>("Cuenta bloqueada", HttpStatus.FORBIDDEN);
+				user.setWrongAttempts(0);
+				this.userDAO.save(user);
+			}
+		} else {
+			return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<>("Usuario logeado correctamente", HttpStatus.OK);
+	}
+	
+	public ResponseEntity<String> validateToken(String tokenId) {
+		Optional<Token> optToken = this.tokenDAO.findById(tokenId);
+		if (optToken.isPresent()) {
+			Token token = optToken.get();
+			long date = token.getDate();
+			long now = System.currentTimeMillis();
+			if (now>date+1000*60*60*24)
+				throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
+			String userName = token.getUserName();
+			Optional<User> optUser = this.userDAO.findById(userName);
+			if(optUser.isPresent()) {
+				User user = optUser.get();
+				user.setConfirmationDate(now);
+				this.userDAO.save(user);
+				return new ResponseEntity<>("{'Validacion':correcta}", HttpStatus.OK);
+			} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+		} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token " + tokenId + " no encontrado");
 	}
 
 }

@@ -49,25 +49,21 @@ public class Client {
 				HttpEntity entity = new StringEntity(payload.toString());
 				post.setEntity(entity);
 				post.setHeader("Accept", "application/json");
-				post.setHeader("Content-type", "application/json");				
+				post.setHeader("Content-type", "application/json");			
 				CloseableHttpResponse response = client.execute(post);
-				entity = response.getEntity();
+				entity = response.getEntity();						
 				String responseText = EntityUtils.toString(entity);
-				if (responseText==null)
-					return null;
+				HttpStatus httpStatusCode = HttpStatus.valueOf(response.getStatusLine().getStatusCode());
+				return new ResponseEntity<>(responseText, httpStatusCode);
+			} catch (Exception exception) {
+				return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+			} finally {
 				client.close();
-				if(response.getStatusLine().getStatusCode() == 200) 
-					return new ResponseEntity<>(responseText, HttpStatus.OK);
-				return new ResponseEntity<>(responseText, HttpStatus.BAD_REQUEST);
-			} catch (Exception e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
-		} catch (IOException e1) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
+		} catch (IOException ioexception) {
+			return new ResponseEntity<>(ioexception.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-
-	
-	
+		
 }
 

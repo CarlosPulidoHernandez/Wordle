@@ -14,6 +14,16 @@ public class User {
 	@Lob
 	@Column(columnDefinition = "LONGTEXT")
 	private String pwd;
+	private Integer wrongAttempts;
+	private Long confirmationDate;
+
+	public User() {
+		this.wrongAttempts = 0;
+	}
+	
+	public void increaseWrongAttempts() {
+		this.wrongAttempts++;
+	}
 
 	public void setUsername(String userName) {
 		this.userName = userName;
@@ -38,4 +48,20 @@ public class User {
 	public String getPwd() {
 		return pwd;
 	}	
+	
+	public Integer getWrongAttempts() {
+		return wrongAttempts;
+	}
+
+	public void setWrongAttempts(Integer wrongAttempts) {
+		this.wrongAttempts = wrongAttempts;
+	}
+	
+	public Long getConfirmationDate() {
+		return confirmationDate;
+	}
+
+	public void setConfirmationDate(Long confirmationDate) {
+		this.confirmationDate = confirmationDate;
+	}
 }

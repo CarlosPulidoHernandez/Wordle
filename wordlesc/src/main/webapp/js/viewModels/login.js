@@ -40,7 +40,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 					app.router.go( { path : "menu"} );
 				},
 				error : function(response) {
-					self.error(response.responseJSON.errorMessage);
+					self.error(response.responseText);
 				}
 			};
 			$.ajax(data);
