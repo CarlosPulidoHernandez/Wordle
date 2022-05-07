@@ -54,6 +54,12 @@ public class UserController {
 		return this.userService.login(jso);	
 	}
 	
+	@PostMapping("/changePassword")
+	public ResponseEntity<String> changePassword(@RequestBody Map<String, Object> info){
+		JSONObject jso = new JSONObject(info);
+		return this.userService.changePassword(jso);	
+	}
+	
 	@GetMapping("/validateAccount/{tokenId}")
 	public ResponseEntity<String> validateAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable String tokenId) {
 		return userService.validateToken(tokenId);

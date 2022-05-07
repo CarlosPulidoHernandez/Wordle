@@ -78,7 +78,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 					self.match().playerB(response.playerB)
 				},
 				error : function(response) {
-					self.error(response);
+					self.error(response.responseJSON.message);
 				}
 			};
 			$.ajax(data);

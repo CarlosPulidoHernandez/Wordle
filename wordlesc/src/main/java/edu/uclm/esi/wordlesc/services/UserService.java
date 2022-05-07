@@ -2,6 +2,8 @@ package edu.uclm.esi.wordlesc.services;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,7 +40,8 @@ public class UserService {
 		Token token = new Token(user.getUserName());
 		this.tokenDAO.save(token);
 		Email smtp=new Email();
-		smtp.send(user.getEmail(), "Bienvenido al sistema", 
+		smtp.send(user.getEmail(), 
+			"Bienvenido al sistema" + user.getUserName(), 
 			"Para confirmar, pulse aquí: " +
 			"http://localhost/user/validateAccount/" + token.getId());
 		return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
@@ -67,6 +70,31 @@ public class UserService {
 			return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
 		}
 		return new ResponseEntity<>("Usuario logeado correctamente", HttpStatus.OK);
+	}
+	
+	public ResponseEntity<String> changePassword(JSONObject jso) {
+		String name = jso.getString("userName");
+		String pwd = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("pwd"));
+		String newpwd1 = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("newpwd1"));
+		String newpwd2 = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("newpwd2"));
+				
+		Optional<User> optUser = this.userDAO.findById(name);
+		if (optUser.isPresent()) {
+			User user = optUser.get();
+			if (!user.getPwd().equals(pwd)) 
+				return new ResponseEntity<>("Credenciales no válidas", HttpStatus.FORBIDDEN);
+			if (!newpwd1.equals(newpwd2)) 
+				return new ResponseEntity<>("Las contraseñas no coinciden", HttpStatus.FORBIDDEN);
+			if(pwd.equals(newpwd1)) 
+				return new ResponseEntity<>("La nueva contraseña no puede ser igual a la actual", HttpStatus.FORBIDDEN);
+			if (newpwd1.length()<6)
+				return new ResponseEntity<>("La nueva contraseña debete tener una longitud de 6 o más caracteres", HttpStatus.FORBIDDEN);
+			user.setPwd(jso.getString("newpwd1"));
+			this.userDAO.save(user);
+			return new ResponseEntity<>("Contraseña cambiada correctamente", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
+		}
 	}
 	
 	public ResponseEntity<String> validateToken(String tokenId) {

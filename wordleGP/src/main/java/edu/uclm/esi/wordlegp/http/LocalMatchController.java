@@ -6,11 +6,13 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import edu.uclm.esi.wordlegp.model.LocalMatch;
 import edu.uclm.esi.wordlegp.services.LocalMatchService;
@@ -39,6 +41,9 @@ public class LocalMatchController {
 	
 	@GetMapping(value = "/play")
 	public LocalMatch playMatch(HttpSession session) {
+		if (session.getAttribute("userName") == null) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuario no logeado");
+		}
 		System.out.println("Local play, UA session: "+ session.getId());
 		String url = LocalManager.get().getConfiguration().getString("SC");
 		

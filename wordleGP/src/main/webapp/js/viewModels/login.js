@@ -51,7 +51,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		}
 		
 		changePassword() {
-			
+			app.router.go( { path : "changePassword" } );
 		}
 
 

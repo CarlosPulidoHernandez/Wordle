@@ -11,38 +11,44 @@
 define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		'jquery' ], function(ko, app, moduleUtils, accUtils, $) {
 
-	function RegisterViewModel() {
-		var self = this;
+	class changePasswordViewModel {
+		constructor() {
+			var self = this;
 		
-		self.userName = ko.observable("");
-		self.email = ko.observable("");
-		self.pwd1 = ko.observable("");
-		self.pwd2 = ko.observable("");
-		self.picture=ko.observable();
+			self.userName = ko.observable("");
+			self.pwd = ko.observable("");
+			self.newpwd1 = ko.observable("");
+			self.newpwd2 = ko.observable("");
 
-		self.message = ko.observable();
-		self.error = ko.observable();
-		
-		self.setPicture = function(widget, event) {
-			var file = event.target.files[0];
-			var reader = new FileReader();
-			reader.onload = function () {
-				self.picture ("data:image/png;base64," + btoa(reader.result));
-			}
-			reader.readAsBinaryString(file);
+			self.message = ko.observable();
+			self.error = ko.observable();
+			
+			// Header Config
+			self.headerConfig = ko.observable({
+				'view' : [],
+				'viewModel' : null
+			});
+			moduleUtils.createView({
+				'viewPath' : 'views/header.html'
+			}).then(function(view) {
+				self.headerConfig({
+					'view' : view,
+					'viewModel' : app.getHeaderModel()
+				})
+			})
 		}
 		
-		self.register = function() {
+		changePassword () {
+			var self = this;
 			var info = {
-				userName : self.userName(),
-				email : self.email(),
-				pwd1 : self.pwd1(),
-				pwd2 : self.pwd2(),
-				picture : self.picture()
+				userName : this.userName(),
+				pwd : this.pwd(),
+				newpwd1 : this.newpwd1(),
+				newpwd2 : this.newpwd2(),		
 			};
 			var data = {
 					data : JSON.stringify(info),
-					url : "user/register",
+					url : "user/changePassword",
 					type : "put",
 					contentType : 'application/json',
 					success : function(response) {
@@ -56,35 +62,21 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			};
 			$.ajax(data);    	  
 		}
-
-		// Header Config
-		self.headerConfig = ko.observable({
-			'view' : [],
-			'viewModel' : null
-		});
-		moduleUtils.createView({
-			'viewPath' : 'views/header.html'
-		}).then(function(view) {
-			self.headerConfig({
-				'view' : view,
-				'viewModel' : app.getHeaderModel()
-			})
-		})
-
-		self.connected = function() {
-			accUtils.announce('Register page loaded.');
-			document.title = "Registro";
-			// Implement further logic if needed
+		
+		connected() {
+			accUtils.announce('changePassword page loaded.');
+			document.title = "changePassword";
 		};
 
-		self.disconnected = function() {
+		disconnected() {
 			// Implement if needed
 		};
 
-		self.transitionCompleted = function() {
+		transitionCompleted() {
 			// Implement if needed
 		};
+
 	}
 
-	return RegisterViewModel;
+	return changePasswordViewModel;
 });

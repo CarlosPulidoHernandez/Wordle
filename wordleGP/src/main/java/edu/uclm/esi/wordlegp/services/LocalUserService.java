@@ -25,6 +25,13 @@ public class LocalUserService {
 		return client.sendPost(url, jso);
 	}
 	
+	public ResponseEntity<String> changePassword(JSONObject jso) {
+		Client client = new Client();
+		String url = LocalManager.get().getConfiguration().getString("SC");
+		url = url + "user/changePassword";
+		return client.sendPost(url, jso);
+	}
+	
 	public JSONObject validate(@PathVariable String tokenId) {
 		Client client = new Client();
 		String url = LocalManager.get().getConfiguration().getString("SC");

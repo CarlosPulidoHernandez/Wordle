@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ public class LocalUserController {
 	@Autowired
 	private LocalUserService userService;
 	
-	@CrossOrigin(origins = "*")
 	@PutMapping("/register")
 	public ResponseEntity<String> register(@RequestBody Map<String, Object> credenciales) {
 		try {
@@ -49,18 +49,32 @@ public class LocalUserController {
 		}
 	}
 	
-	@CrossOrigin(origins = "*")
 	@PutMapping("/login")
-	public ResponseEntity<String> login(@RequestBody Map<String, Object> credenciales) {
+	public ResponseEntity<String> login(HttpSession session, @RequestBody Map<String, Object> credenciales) {
 		try {
 			JSONObject jso = new JSONObject(credenciales);
-			return this.userService.login(jso);
+			ResponseEntity<String> response = this.userService.login(jso);
+			if(response.getStatusCode() == HttpStatus.OK)
+				session.setAttribute("userName", jso.getString("name"));
+			return response;
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
 		}
 	}
+	
+	@PutMapping("/changePassword")
+	public ResponseEntity<String> changePassword(HttpSession session, @RequestBody Map<String, Object> info) {
+		try {
+			if (session.getAttribute("userName") == null)
+				return new ResponseEntity<>("Usuario no logeado", HttpStatus.FORBIDDEN);
+			JSONObject jso = new JSONObject(info);
+			return this.userService.changePassword(jso);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+		}
+	}
+	
 		
-	@CrossOrigin(origins = "*")
 	@GetMapping("/validateAccount/{tokenId}")
 	public ResponseEntity<String> validateAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable String tokenId) {
 		try {
@@ -76,7 +90,6 @@ public class LocalUserController {
 		}	
 	}
 	
-	@CrossOrigin(origins = "*")
 	@GetMapping("/changePwd")
 	public String changePwd(HttpServletRequest request, HttpServletResponse response) {
 		try {
