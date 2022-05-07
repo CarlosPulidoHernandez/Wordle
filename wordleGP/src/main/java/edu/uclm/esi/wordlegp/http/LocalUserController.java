@@ -90,6 +90,16 @@ public class LocalUserController {
 		}	
 	}
 	
+	@PutMapping("/createToken")
+	public ResponseEntity<String> createToken(@RequestBody Map<String, Object> info) {
+		try {
+			JSONObject jso = new JSONObject(info);
+			return this.userService.createToken(jso);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+		}
+	}
+	
 	@GetMapping("/changePwd")
 	public String changePwd(HttpServletRequest request, HttpServletResponse response) {
 		try {

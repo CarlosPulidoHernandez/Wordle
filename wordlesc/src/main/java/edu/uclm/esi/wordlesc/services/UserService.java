@@ -115,5 +115,22 @@ public class UserService {
 			} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
 		} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token " + tokenId + " no encontrado");
 	}
-
+	
+	public ResponseEntity<String> createToken(JSONObject jso) {
+		User user = new User();
+		user.setEmail(jso.getString("email"));
+		Optional<User> optUser = this.userDAO.findByEmail(user.getEmail());
+		if (!optUser.isPresent()) {
+			return new ResponseEntity<>("Email no encontrado", HttpStatus.BAD_REQUEST);
+		}		
+		user = optUser.get();
+		Token token = new Token(user.getUserName());
+		this.tokenDAO.save(token);
+		Email smtp=new Email();
+		smtp.send(user.getEmail(), 
+			"Bienvenido al sistema" + user.getUserName(), 
+			"Para crear una nueva contraseña, pulse aquí: " +
+			"http://localhost/user/resetPassword/" + token.getId());
+		return new ResponseEntity<>("Email enviado correctamente", HttpStatus.OK);
+	}
 }

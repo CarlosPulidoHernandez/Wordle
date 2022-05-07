@@ -64,4 +64,10 @@ public class UserController {
 	public ResponseEntity<String> validateAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable String tokenId) {
 		return userService.validateToken(tokenId);
 	}
+	
+	@PostMapping("/createToken")
+	public ResponseEntity<String> createToken(@RequestBody Map<String, Object> info){
+		JSONObject jso = new JSONObject(info);
+		return this.userService.createToken(jso);	
+	}
 }

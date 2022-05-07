@@ -46,6 +46,26 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			$.ajax(data);
 		}
 		
+		sendEmail() {
+			var self = this;
+			var info = {
+				name : this.email()
+			};
+			var data = {
+				data : JSON.stringify(info),
+				url : "user/createToken",
+				type : "put",
+				contentType : 'application/json',
+				success : function(response) {
+					self.message(response);
+				},
+				error : function(response) {
+					self.error(response.responseText);
+				}
+			};
+			$.ajax(data);
+		}
+		
 		register() {
 			app.router.go( { path : "register" } );
 		}

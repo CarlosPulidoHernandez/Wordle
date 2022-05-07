@@ -30,10 +30,14 @@
             		<a data-bind="click : changePassword">Cambiar contraseña</a>
             	</div>
             </div>
-			<div class="oj-flex">
-            	<div class="oj-sm-12">
-            		<a>Recuperar contraseña</a>
-            	</div>
+            <div class="oj-sm-12">
+            <label>Si desea recuperar su contraseña, introduzca el email</label>
+            </div>
+            <div class="oj-sm-12">
+            		<input type="text" placeholder="email" data-bind="value : email">
+            </div>
+            <div class="oj-sm-12">
+            		<button data-bind="click : sendEmail">Recuperar contraseña</button>
             </div>
             <div class="oj-flex">
             	<div class="oj-sm-12">

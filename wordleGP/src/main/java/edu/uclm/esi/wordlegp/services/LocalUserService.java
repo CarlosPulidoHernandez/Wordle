@@ -38,5 +38,12 @@ public class LocalUserService {
 		url = url + "user/validateAccount/" + tokenId;
 		return client.sendGet(url);
 	}
+	
+	public ResponseEntity<String> createToken(JSONObject jso) {
+		Client client = new Client();
+		String url = LocalManager.get().getConfiguration().getString("SC");
+		url = url + "user/createToken";
+		return client.sendPost(url, jso);
+	}
 
 }
