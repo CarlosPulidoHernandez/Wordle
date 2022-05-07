@@ -11,7 +11,7 @@
 define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		'jquery' ], function(ko, app, moduleUtils, accUtils, $) {
 
-	class restePasswordViewModel {
+	class resetPasswordViewModel {
 		constructor() {
 			var self = this;
 		

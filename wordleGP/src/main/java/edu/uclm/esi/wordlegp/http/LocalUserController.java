@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,15 +101,13 @@ public class LocalUserController {
 		}
 	}
 	
-	@GetMapping("/changePwd")
-	public String changePwd(HttpServletRequest request, HttpServletResponse response) {
+	@GetMapping("/resetPassword/{tokenId}")
+	public void resetPassword(HttpServletRequest request, HttpServletResponse response, @PathVariable String tokenId) {
 		try {
-			return "changePassword.html";
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			response.sendRedirect("http://localhost/?ojr=resetPassword");
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
 		}
 	}
-	
-	
 }
 

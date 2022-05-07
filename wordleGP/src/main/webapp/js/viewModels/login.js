@@ -4,9 +4,10 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 	class LoginViewModel {
 		constructor() {
 			var self = this;
-
+			
 			self.userName = ko.observable();
 			self.pwd = ko.observable();
+			self.email = ko.observable();
 			self.message = ko.observable();
 			self.error = ko.observable();
 			
@@ -49,7 +50,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		sendEmail() {
 			var self = this;
 			var info = {
-				name : this.email()
+				email : this.email()
 			};
 			var data = {
 				data : JSON.stringify(info),
@@ -57,9 +58,11 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 				type : "put",
 				contentType : 'application/json',
 				success : function(response) {
+					self.error("");
 					self.message(response);
 				},
 				error : function(response) {
+					self.message("");
 					self.error(response.responseText);
 				}
 			};
