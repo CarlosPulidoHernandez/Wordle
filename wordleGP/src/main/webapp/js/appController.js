@@ -30,7 +30,7 @@ define(['knockout', 'ojs/ojcorerouter', 'ojs/ojmodulerouter-adapter', 'ojs/ojkno
         { path: 'register', detail: { label: 'Crear cuenta', iconClass: 'oj-ux-ico-fire' } },
         { path: 'menu', detail: { label: 'Menú', iconClass: 'oj-ux-ico-fire' } },
         { path: 'changePassword', detail: { label: 'Cambiar contraseña', iconClass: 'oj-ux-ico-fire' } },
-        { path: 'resetPassword', detail: { label: 'Reset contraseña', iconClass: 'oj-ux-ico-fire' } },
+        { path: 'resetPassword', detail: { label: 'Recuperar contraseña', iconClass: 'oj-ux-ico-fire' } },
         { path: 'about', detail: { label: 'About', iconClass: 'oj-ux-ico-information-s' } }
       ];
       

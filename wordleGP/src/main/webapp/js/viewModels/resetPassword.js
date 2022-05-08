@@ -15,8 +15,7 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		constructor() {
 			var self = this;
 		
-			self.userName = ko.observable("");
-			self.pwd = ko.observable("");
+			self.email = ko.observable("");
 			self.newpwd1 = ko.observable("");
 			self.newpwd2 = ko.observable("");
 
@@ -41,14 +40,13 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		resetPassword () {
 			var self = this;
 			var info = {
-				userName : this.userName(),
 				newpwd1 : this.newpwd1(),
 				newpwd2 : this.newpwd2(),		
 			};
 			var data = {
 					data : JSON.stringify(info),
-					url : "user/resetPassword",
-					type : "put",
+					url : "user/newPassword",
+					type : "post",
 					contentType : 'application/json',
 					success : function(response) {
 						self.error("");

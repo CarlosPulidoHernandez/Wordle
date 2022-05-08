@@ -2,6 +2,7 @@ package edu.uclm.esi.wordlegp.http;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,9 +17,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
@@ -104,9 +107,20 @@ public class LocalUserController {
 	@GetMapping("/resetPassword/{tokenId}")
 	public void resetPassword(HttpServletRequest request, HttpServletResponse response, @PathVariable String tokenId) {
 		try {
-			response.sendRedirect("http://localhost/?ojr=resetPassword");
+			response.sendRedirect("http://localhost/?ojr=resetPassword&tokenId="+tokenId);
 		} catch (JSONException | IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@PostMapping("/newPassword")
+	public ResponseEntity<String> resetPassword(String tokenId) {
+		try {
+			String info = null;
+			JSONObject jso = new JSONObject(info);
+			return this.userService.createToken(jso);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
 		}
 	}
 }
