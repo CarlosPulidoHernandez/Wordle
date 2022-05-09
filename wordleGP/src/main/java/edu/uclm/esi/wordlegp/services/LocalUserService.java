@@ -45,5 +45,12 @@ public class LocalUserService {
 		url = url + "user/createToken";
 		return client.sendPost(url, jso);
 	}
+	
+	public ResponseEntity<String> resetPassword(JSONObject jso) {
+		Client client = new Client();
+		String url = LocalManager.get().getConfiguration().getString("SC");
+		url = url + "user/resetPassword";
+		return client.sendPost(url, jso);
+	}
 
 }

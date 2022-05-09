@@ -32,6 +32,9 @@ public class UserService {
 		user.setUsername(jso.getString("userName"));
 		user.setEmail(jso.getString("email"));
 		user.setPwd(jso.getString("pwd1"));
+		if(jso.has("picture")) {
+			user.setPicture((jso.getString("picture")).getBytes());
+		}
 		Optional<User> optUser = this.userDAO.findById(user.getUserName());
 		if (optUser.isPresent()) {
 			return new ResponseEntity<>("Nombre de usuario ya registrado", HttpStatus.BAD_REQUEST);
@@ -88,7 +91,7 @@ public class UserService {
 			if(pwd.equals(newpwd1)) 
 				return new ResponseEntity<>("La nueva contraseña no puede ser igual a la actual", HttpStatus.FORBIDDEN);
 			if (newpwd1.length()<6)
-				return new ResponseEntity<>("La nueva contraseña debete tener una longitud de 6 o más caracteres", HttpStatus.FORBIDDEN);
+				return new ResponseEntity<>("La nueva contraseña debe de tener una longitud de 6 o más caracteres", HttpStatus.FORBIDDEN);
 			user.setPwd(jso.getString("newpwd1"));
 			this.userDAO.save(user);
 			return new ResponseEntity<>("Contraseña cambiada correctamente", HttpStatus.OK);
@@ -112,8 +115,8 @@ public class UserService {
 				user.setConfirmationDate(now);
 				this.userDAO.save(user);
 				return new ResponseEntity<>("{'Validacion':correcta}", HttpStatus.OK);
-			} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
-		} else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token " + tokenId + " no encontrado");
+			} else return new ResponseEntity<>("Usuario no encontrado", HttpStatus.NOT_FOUND);
+		} else return new ResponseEntity<>( "Token " + tokenId + " no encontrado", HttpStatus.NOT_FOUND);
 	}
 	
 	public ResponseEntity<String> createToken(JSONObject jso) {
@@ -132,5 +135,33 @@ public class UserService {
 			"Para crear una nueva contraseña, pulse aquí: " +
 			"http://localhost/user/resetPassword/" + token.getId());
 		return new ResponseEntity<>("Email enviado correctamente", HttpStatus.OK);
+	}
+	
+	public ResponseEntity<String> resetPassword(JSONObject jso) {
+		String tokenId = jso.getString("tokenId");
+		String newPwd1 = jso.getString("newpwd1");
+		String newPwd2 = jso.getString("newpwd2");
+		Optional<Token> optToken = this.tokenDAO.findById(tokenId);
+		
+		if (optToken.isPresent()) {
+			Token token = optToken.get();
+			long date = token.getDate();
+			long now = System.currentTimeMillis();
+			if (now>date+1000*60*60*24)
+				return new ResponseEntity<>("Token caducado", HttpStatus.GONE);
+			String userName = token.getUserName();
+			Optional<User> optUser = this.userDAO.findById(userName);
+			if(optUser.isPresent()) {
+				User user = optUser.get();
+				if (!newPwd1.equals(newPwd2)) 
+					return new ResponseEntity<>("Las contraseñas no coinciden", HttpStatus.FORBIDDEN);
+				if (newPwd1.length()<6)
+					return new ResponseEntity<>("La nueva contraseña debe de tener una longitud de 6 o más caracteres", HttpStatus.FORBIDDEN);
+				user.setPwd(newPwd1);
+				this.userDAO.save(user);
+				this.tokenDAO.delete(token);
+				return new ResponseEntity<>("Contraseña cambiada correctamente", HttpStatus.OK);
+			}else return new ResponseEntity<>("Usuario no encontrado", HttpStatus.NOT_FOUND);
+		} else return new ResponseEntity<>( "Token " + tokenId + " no encontrado", HttpStatus.NOT_FOUND);
 	}
 }

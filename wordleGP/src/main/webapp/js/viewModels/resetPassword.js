@@ -14,11 +14,10 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 	class resetPasswordViewModel {
 		constructor() {
 			var self = this;
-		
+			
 			self.email = ko.observable("");
 			self.newpwd1 = ko.observable("");
 			self.newpwd2 = ko.observable("");
-
 			self.message = ko.observable();
 			self.error = ko.observable();
 			
@@ -38,15 +37,17 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		}
 		
 		resetPassword () {
+			const params = new URLSearchParams(window.location.search)
 			var self = this;
 			var info = {
 				newpwd1 : this.newpwd1(),
-				newpwd2 : this.newpwd2(),		
+				newpwd2 : this.newpwd2(),
+				tokenId : params.get('tokenId') 		
 			};
 			var data = {
 					data : JSON.stringify(info),
 					url : "user/newPassword",
-					type : "post",
+					type : "put",
 					contentType : 'application/json',
 					success : function(response) {
 						self.error("");

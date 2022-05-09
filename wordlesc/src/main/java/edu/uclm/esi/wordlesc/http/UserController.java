@@ -70,4 +70,10 @@ public class UserController {
 		JSONObject jso = new JSONObject(info);
 		return this.userService.createToken(jso);	
 	}
+	
+	@PostMapping("/resetPassword")
+	public ResponseEntity<String> resetPassword(@RequestBody Map<String, Object> info){
+		JSONObject jso = new JSONObject(info);
+		return this.userService.resetPassword(jso);	
+	}
 }

@@ -113,12 +113,11 @@ public class LocalUserController {
 		}
 	}
 	
-	@PostMapping("/newPassword")
-	public ResponseEntity<String> resetPassword(String tokenId) {
+	@PutMapping("/newPassword")
+	public ResponseEntity<String> resetPassword(@RequestBody Map<String, Object> info) {
 		try {
-			String info = null;
 			JSONObject jso = new JSONObject(info);
-			return this.userService.createToken(jso);
+			return this.userService.resetPassword(jso);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
 		}

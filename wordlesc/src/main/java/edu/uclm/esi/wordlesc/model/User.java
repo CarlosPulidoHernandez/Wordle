@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import java.util.Base64;
 
 @Entity
 public class User {
@@ -16,6 +17,9 @@ public class User {
 	private String pwd;
 	private Integer wrongAttempts;
 	private Long confirmationDate;
+	@Lob
+	@Column(columnDefinition = "LONGTEXT")
+	private String picture;
 
 	public User() {
 		this.wrongAttempts = 0;
@@ -63,5 +67,14 @@ public class User {
 
 	public void setConfirmationDate(Long confirmationDate) {
 		this.confirmationDate = confirmationDate;
+	}
+	
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(byte[] picture) {
+		byte[] b64 = Base64.getEncoder().encode(picture);
+		this.picture = new String(b64);	
 	}
 }
