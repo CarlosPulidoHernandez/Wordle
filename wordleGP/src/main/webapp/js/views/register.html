@@ -1,15 +1,19 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+	<link href="css/register.css" rel="stylesheet" />
+</head>
 <div class="oj-hybrid-applayout-page">
-	<div class="oj-applayout-fixed-top">
-		<header role="banner" class="oj-hybrid-applayout-header">
-			<oj-module config="[[headerConfig]]"></oj-module>
-		</header>
-	</div>
+  <div class="oj-applayout-fixed-top">
+    <header role="banner" class="oj-hybrid-applayout-header">
+      <oj-module config="[[headerConfig]]"></oj-module>
+    </header>
+  </div>
 	<!-- This is where your main page content will be loaded -->
 	<div class="oj-applayout-content">
 		<div role="main" class="oj-hybrid-applayout-content">
 			<div class="oj-hybrid-padding">
-				<h1>Creación de cuenta</h1>
-				<div>
+				<div id="register">
 					<div class="input-field">
 						<input type="text" placeholder="Nombre de usuario" data-bind="value : userName">
 					</div> 
@@ -22,14 +26,15 @@
 					<div class="input-field">
 						<input type="password" placeholder="Repite contraseña" data-bind="value : pwd2">
 					</div>
-					<div class="oj-sm-12">
-						<button id="btnCrearCuenta" data-bind="click : register">Crear cuenta</button>
-					</div> 
-					<div class="oj-sm-12" data-bind="html : message" style="color : blue">
-	            	</div>
-	            	<div class="oj-sm-12" data-bind="html : error" style="color : red">
-	            	</div>						
+					<div class="file-field"> 
+						<input type="file" size="50" data-bind="event : {change : setPicture }"><br>
+					</div>
+                  	<div class="button-field">
+						<button class="Register" data-bind="click : register">Registrarse</button>
+                  	</div>					
 				</div>
+                <div class="input-field-status" data-bind="html : message" style="color : blue"> </div>
+	            <div class="input-field-status" data-bind="html : error" style="color : red"> </div>
 			</div>
 		</div>
 	</div>

@@ -1,18 +1,15 @@
-html, body{height:100%;}
+#register .input-field{position:relative; height:60px; width:300px; margin:auto; }
 
-body{background:#283593; display:flex; justify-content:center; align-items:center; max-width:1200px; margin:0 auto;}
-#signin{width:40%; background:#3F51B5; margin:100px 50px; box-shadow:0 0 64px rgba(0,0,0,0.5); padding:100px; position:relative; overflow:hidden;}
+#register .file-field{position:relative; height:60px; width:300px; margin:auto; }
 
-.logo-image{background:#3F51B5;}
+#register .button-field{position:relative; height:60px; width:300px; margin:auto; }
 
-.form-title{font:500 16px/1 'Roboto',sans-serif; color:#EBEBEB; text-align:center; margin:35px 0;}
+#register .input-field input{font:500 16px/1 'Roboto',sans-serif; color:#606060; border:none; box-shadow:0 10px 10px rgba(0,0,0,0.25); border-radius:5px; outline:0; overflow:hidden; position:absolute; bottom:0; left:0; right:0; padding:10px 10px 10px 10px;}
 
-.input-field{position:relative; height:60px; margin:50px 0;}
+#register .input-field-probar input{font:500 16px/1 'Roboto',sans-serif; color:#606060; border:none; box-shadow:0 10px 10px rgba(0,0,0,0.25); border-radius:5px; outline:0; overflow:hidden;}
+#register .file-field input{font:500 16px/1 'Roboto',sans-serif; color:#606060; border:none; outline:0; overflow:hidden; position:absolute; bottom:0; left:0; right:0; padding:10px 10px 10px 10px;}
 
-.input-field input{font:500 16px/1 'Roboto',sans-serif; color:#606060; border:none; box-shadow:0 10px 10px rgba(0,0,0,0.25); border-radius:5px; outline:0; overflow:hidden; position:absolute; bottom:0; left:0; right:0; padding:10px 10px 10px 10px;}
 
-.forgot-pw{font:600 14px/1 'Roboto',sans-serif; color:#FFF; text-decoration:none; float:left; margin:0 0 10px 0; display:block;}
+#register button.Register{position:relative; font:600 14px/1 'Roboto',sans-serif; margin:auto; margin-top:30px; display:block; cursor:pointer; box-shadow:0 10px 10px rgba(0,0,0,0.25); border-radius:5px; background:#FFF;}
 
-button.login{font:600 14px/1 'Roboto',sans-serif; background:#3F51B5; color:#FFF; text-decoration:none; float:right; margin:0 0 10px 0; display:block; border:none; cursor:pointer}
-
-.input-field {color:#FFF;}
+.input-field-status{font:500 16px/1 'Roboto',sans-serif; margin:auto; text-align: center;}

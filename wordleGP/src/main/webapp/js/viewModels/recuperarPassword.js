@@ -1,12 +1,10 @@
 define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		'jquery' ], function(ko, app, moduleUtils, accUtils, $) {
 
-	class LoginViewModel {
+	class RecuperarPasswordViewModel {
 		constructor() {
 			var self = this;
 			
-			self.userName = ko.observable();
-			self.pwd = ko.observable();
 			self.email = ko.observable();
 			self.message = ko.observable();
 			self.error = ko.observable();
@@ -26,27 +24,6 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			})
 		}
 
-		login() {
-			var self = this;
-			var info = {
-				name : this.userName(),
-				pwd : this.pwd()
-			};
-			var data = {
-				data : JSON.stringify(info),
-				url : "user/login",
-				type : "put",
-				contentType : 'application/json',
-				success : function(response) {
-					app.router.go( { path : "menu"} );
-				},
-				error : function(response) {
-					self.error(response.responseText);
-				}
-			};
-			$.ajax(data);
-		}
-		
 		sendEmail() {
 			var self = this;
 			var info = {
@@ -69,19 +46,6 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 			$.ajax(data);
 		}
 		
-		register() {
-			app.router.go( { path : "register" } );
-		}
-		
-		changePassword() {
-			app.router.go( { path : "changePassword" } );
-		}
-		
-		recuperarPassword() {
-			app.router.go( { path : "recuperarPassword" } );
-		}
-
-
 		connected() {
 			accUtils.announce('Login page loaded.');
 			document.title = "Login";
@@ -96,5 +60,5 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 		};
 	}
 
-	return LoginViewModel;
+	return RecuperarPasswordViewModel;
 });

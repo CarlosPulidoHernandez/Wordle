@@ -27,19 +27,19 @@ define(['knockout', 'ojs/ojcorerouter', 'ojs/ojmodulerouter-adapter', 'ojs/ojkno
       var routerData = [
         { path: '', redirect: 'login' },
         { path: 'login', detail: { label: 'Login', iconClass: 'oj-ux-ico-bar-chart' } },
-        { path: 'register', detail: { label: 'Crear cuenta', iconClass: 'oj-ux-ico-fire' } },
+        { path: 'register', detail: { label: 'Registro', iconClass: 'oj-ux-ico-fire' } },
         { path: 'menu', detail: { label: 'Menú', iconClass: 'oj-ux-ico-fire' } },
         { path: 'changePassword', detail: { label: 'Cambiar contraseña', iconClass: 'oj-ux-ico-fire' } },
-        { path: 'resetPassword', detail: { label: 'Recuperar contraseña', iconClass: 'oj-ux-ico-fire' } },
+        { path: 'resetPassword', detail: { label: 'Restablecer contraseña', iconClass: 'oj-ux-ico-fire' } },
+        { path: 'recuperarPassword', detail: { label: 'Recuperar contraseña', iconClass: 'oj-ux-ico-fire' } },
         { path: 'about', detail: { label: 'About', iconClass: 'oj-ux-ico-information-s' } }
       ];
       
       var navData = [
         { path: '', redirect: 'login' },
         { path: 'login', detail: { label: 'Login', iconClass: 'oj-ux-ico-bar-chart' } },
-        { path: 'register', detail: { label: 'Crear cuenta', iconClass: 'oj-ux-ico-fire' } },
+        { path: 'register', detail: { label: 'Registro', iconClass: 'oj-ux-ico-fire' } },
         { path: 'menu', detail: { label: 'Menú', iconClass: 'oj-ux-ico-fire' } },
-        { path: 'changePassword', detail: { label: 'Cambiar contraseña', iconClass: 'oj-ux-ico-fire' } },
         { path: 'about', detail: { label: 'About', iconClass: 'oj-ux-ico-information-s' } }
       ];
                   

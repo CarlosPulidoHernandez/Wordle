@@ -1,3 +1,8 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+	<link href="css/menu.css" rel="stylesheet" />
+</head>
 <div class="oj-hybrid-applayout-page">
   <div class="oj-applayout-fixed-top">
     <header role="banner" class="oj-hybrid-applayout-header">
@@ -6,31 +11,32 @@
   </div>
   <div class="oj-applayout-content">
     <div role="main" class="oj-hybrid-applayout-content">
-      <div class="oj-hybrid-padding">
-        <h1>Menú de opciones</h1>
-        
-        <div data-bind="html : status" style="color : blue"></div>
-        <div data-bind="html : error" style="color : red"></div>
-        
-        <div>
-        	<button data-bind="click : playMatch">Jugar partida</button>
-        </div>
-        <!-- ko with : match -->
-	        <div>
+      <div class="oj-hybrid-padding">   
+        <div class="input-field-status" data-bind="html : status" style="color : blue"></div>
+        <div class="input-field-status" data-bind="html : error" style="color : red"></div>    
+      	<div id="menu">
+      	   	<div class="button-field">
+        		<button class="Menu" data-bind="click : playMatch">Jugar partida</button>
+       	 	</div> 
+       	 	<!-- ko with : match -->    	
+      		<div class="data-field">
 	        	Match Id: <div data-bind="html : id"></div>
 	        </div>
-	        <div>
+	        <div class="data-field">
 	        	Player A: <div data-bind="html : playerA"></div>
 	        </div>
-	        <div>
+	        <div class="data-field">
 	        	Player B: <div data-bind="html : playerB"></div>
 	        </div>
-      		<input type="text" data-bind="value : $parents[$parents.length-1].testWord">
-      		<button data-bind="click : function() { $parents[$parents.length-1].guess() }">Probar</button>       			
+	        <div class="data-field">
+	              		<input type="text" placeholder="Palabra" data-bind="value : $parents[$parents.length-1].testWord">
+      		<button class="Probar" data-bind="click : function() { $parents[$parents.length-1].guess() }">Probar</button>  
+      		</div>
+      		<div class="data-field">   			
 	        <table>
 	        	<tr>
-	        		<th>Tablero local</th>
-	        		<th>Tablero rival</th>
+	        		<th class="data-field">Tablero local</th>
+	        		<th class="data-field">Tablero rival</th>
 	        	</tr>
 	        	<!-- ko if : $parent.mensajeFinal() -->
 	        		<tr>
@@ -54,7 +60,9 @@
 		        	</td>
 	        	</tr>
 	        </table>
-	    <!-- /ko -->
+	        </div>
+	    <!-- /ko -->   		
+       	 </div>
       </div>
     </div>
   </div>
