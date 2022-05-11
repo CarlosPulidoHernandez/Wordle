@@ -44,8 +44,8 @@ public class UserService {
 		this.tokenDAO.save(token);
 		Email smtp=new Email();
 		smtp.send(user.getEmail(), 
-			"Bienvenido al sistema" + user.getUserName(), 
-			"Para confirmar, pulse aquí: " +
+			"¡Bienvenido a WORDLESI!", 
+			"Hola " + user.getUserName() + ", para confirmar el registro pulse en el siguiente enlace: " +
 			"http://localhost/user/validateAccount/" + token.getId());
 		return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
 	}

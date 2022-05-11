@@ -2,6 +2,8 @@ package edu.uclm.esi.wordlesc.http;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +40,12 @@ public class UserController {
 			String userName = jso.getString("userName");
 			String pwd1 = jso.getString("pwd1");
 			String email = jso.getString("email");	
+			Pattern pattern = Pattern
+	                .compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+	                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+			Matcher mather = pattern.matcher(email);
+	        if (mather.find() == false)
+	            return new ResponseEntity<>("Email no valido", HttpStatus.BAD_REQUEST);
 			if (userName.length()<6)
 				throw new Exception("El nombre de usuario debe tener 6 caracteres o más");
 			if (pwd1.length()<6)
