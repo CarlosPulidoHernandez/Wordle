@@ -44,12 +44,12 @@ public class UserController {
 	                .compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 	                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 			Matcher mather = pattern.matcher(email);
-	        if (mather.find() == false)
-	            return new ResponseEntity<>("Email no valido", HttpStatus.BAD_REQUEST);
 			if (userName.length()<6)
 				throw new Exception("El nombre de usuario debe tener 6 caracteres o más");
 			if (pwd1.length()<6)
 				throw new Exception("La contraseña debe tener 6 caracteres o más");
+	        if (mather.find() == false)
+	            return new ResponseEntity<>("Email no valido", HttpStatus.BAD_REQUEST);
 			return this.userService.register(jso);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
@@ -74,7 +74,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/createToken")
-	public ResponseEntity<String> createToken(@RequestBody Map<String, Object> info){
+	public ResponseEntity<String> createToken(@RequestBody Map<String, Object> info) throws IOException{
 		JSONObject jso = new JSONObject(info);
 		return this.userService.createToken(jso);	
 	}

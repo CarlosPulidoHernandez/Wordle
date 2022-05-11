@@ -1,5 +1,6 @@
 package edu.uclm.esi.wordlesc.services;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.uclm.esi.wordlesc.dao.UserRepository;
+import edu.uclm.esi.wordlesc.http.RemoteManager;
 import edu.uclm.esi.wordlesc.dao.TokenRepository;
 import edu.uclm.esi.wordlesc.model.User;
 import edu.uclm.esi.wordlesc.model.Email;
@@ -119,7 +121,7 @@ public class UserService {
 		} else return new ResponseEntity<>( "Token " + tokenId + " no encontrado", HttpStatus.NOT_FOUND);
 	}
 	
-	public ResponseEntity<String> createToken(JSONObject jso) {
+	public ResponseEntity<String> createToken(JSONObject jso) throws IOException {
 		User user = new User();
 		user.setEmail(jso.getString("email"));
 		Optional<User> optUser = this.userDAO.findByEmail(user.getEmail());
@@ -130,10 +132,14 @@ public class UserService {
 		Token token = new Token(user.getUserName());
 		this.tokenDAO.save(token);
 		Email smtp=new Email();
+		String texto = RemoteManager.get().readFileAsText("emailRecuperacion.txt");
+		texto = texto.replace("USUARIO", user.getUserName());
+		texto = texto.replace("TOKEN", token.getId());
+		texto = texto.replace("URL", RemoteManager.get().read("parametros.txt").getString("urlRecuperacion"));
+		String[] lineas = texto.split("\n");
 		smtp.send(user.getEmail(), 
-			"Bienvenido al sistema" + user.getUserName(), 
-			"Para crear una nueva contraseña, pulse aquí: " +
-			"http://localhost/user/resetPassword/" + token.getId());
+			lineas[0], 
+			lineas[1]);
 		return new ResponseEntity<>("Email enviado correctamente", HttpStatus.OK);
 	}
 	

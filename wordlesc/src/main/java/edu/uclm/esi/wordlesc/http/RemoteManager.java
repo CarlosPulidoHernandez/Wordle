@@ -52,7 +52,7 @@ public class RemoteManager {
 		this.configuration = read("./parametros.txt");
 	}
 	
-	private JSONObject read(String fileName) throws IOException {
+	public JSONObject read(String fileName) throws IOException {
 		 ClassLoader classLoader = getClass().getClassLoader();
 		 try (InputStream fis = classLoader.getResourceAsStream(fileName)) {
 			byte[] b = new byte[fis.available()];
@@ -78,5 +78,14 @@ public class RemoteManager {
 
 	public void addWrapperSession(String id, WrapperSession wrapperSession) {
 		this.wrapperSessionsByWS.put(id, wrapperSession);
+	}
+
+	public String readFileAsText(String fileName) throws IOException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		 try (InputStream fis = classLoader.getResourceAsStream(fileName)) {
+			byte[] b = new byte[fis.available()];
+			fis.read(b);
+			return  new String(b);
+		 }
 	}
 }

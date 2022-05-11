@@ -28,6 +28,7 @@ public class Match {
 		
 		WebSocketSession webSocketSession = RemoteManager.get().findWrapperSession(playerA).getWebSocketSession();
 		this.webSocketSessionA = webSocketSession;
+		new Watch(this, 5000);
 		System.out.println(this.toString());
 	}
 

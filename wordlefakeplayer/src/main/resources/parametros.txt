@@ -2,9 +2,6 @@
 	"home" : "http://localhost",
 	"login" : "?ojr=login",
 	
-	"urlRecuperacion" : "http://localhost/user/resetPassword/",
-	"fakeUser" : "http://localhost:9000/",
-	
 	"email" : {
 		"host" : "smtp.gmail.com",
 		"startTTLS" : "true",
