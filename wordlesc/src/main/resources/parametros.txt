@@ -3,6 +3,7 @@
 	"login" : "?ojr=login",
 	
 	"urlRecuperacion" : "http://localhost/user/resetPassword/",
+	"urlBienvenida" : "http://localhost/user/validateAccount/",
 	"fakeUser" : "http://localhost:9000/",
 	
 	"email" : {

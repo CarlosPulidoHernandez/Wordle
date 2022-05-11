@@ -3,10 +3,14 @@ package edu.uclm.esi.wordlesc.services;
 import java.io.IOException;
 import java.util.Optional;
 
+import javax.persistence.RollbackException;
 import javax.servlet.http.HttpSession;
+import javax.transaction.TransactionRolledbackException;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +33,7 @@ public class UserService {
 	@Autowired
 	private TokenRepository tokenDAO;
 
-	public ResponseEntity<String> register(JSONObject jso) {
+	public ResponseEntity<String> register(JSONObject jso) throws IOException {
 		User user = new User();
 		user.setUsername(jso.getString("userName"));
 		user.setEmail(jso.getString("email"));
@@ -38,17 +42,24 @@ public class UserService {
 			user.setPicture((jso.getString("picture")).getBytes());
 		}
 		Optional<User> optUser = this.userDAO.findById(user.getUserName());
-		if (optUser.isPresent()) {
-			return new ResponseEntity<>("Nombre de usuario ya registrado", HttpStatus.BAD_REQUEST);
+		if (optUser.isPresent()) 
+			return new ResponseEntity<>("Usuario ya registrado", HttpStatus.BAD_REQUEST);
+		try {
+			this.userDAO.save(user);	
+		}catch(DataIntegrityViolationException exception) {
+			return new ResponseEntity<>("Usuario ya registrado", HttpStatus.BAD_REQUEST);
 		}
-		this.userDAO.save(user);		
 		Token token = new Token(user.getUserName());
 		this.tokenDAO.save(token);
 		Email smtp=new Email();
+		String texto = RemoteManager.get().readFileAsText("emailBienvenida.txt");
+		texto = texto.replace("USUARIO", user.getUserName());
+		texto = texto.replace("TOKEN", token.getId());
+		texto = texto.replace("URL", RemoteManager.get().read("parametros.txt").getString("urlBienvenida"));
+		String[] lineas = texto.split("\n");
 		smtp.send(user.getEmail(), 
-			"¡Bienvenido a WORDLESI!", 
-			"Hola " + user.getUserName() + ", para confirmar el registro pulse en el siguiente enlace: " +
-			"http://localhost/user/validateAccount/" + token.getId());
+			lineas[0], 
+			lineas[1]);
 		return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
 	}
 
@@ -64,10 +75,12 @@ public class UserService {
 					user.increaseWrongAttempts();
 					this.userDAO.save(user);
 				}
-				return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
+				return new ResponseEntity<>("Credenciales no válidas", HttpStatus.FORBIDDEN);
 			}else {
 				if (user.getWrongAttempts() == 3)
 					return new ResponseEntity<>("Cuenta bloqueada", HttpStatus.FORBIDDEN);
+				if (user.getConfirmationDate() == null)
+					return new ResponseEntity<>("Cuenta no validada", HttpStatus.FORBIDDEN);
 				user.setWrongAttempts(0);
 				this.userDAO.save(user);
 			}
@@ -125,22 +138,21 @@ public class UserService {
 		User user = new User();
 		user.setEmail(jso.getString("email"));
 		Optional<User> optUser = this.userDAO.findByEmail(user.getEmail());
-		if (!optUser.isPresent()) {
-			return new ResponseEntity<>("Email no encontrado", HttpStatus.BAD_REQUEST);
+		if (optUser.isPresent()) {
+			user = optUser.get();
+			Token token = new Token(user.getUserName());
+			this.tokenDAO.save(token);
+			Email smtp=new Email();
+			String texto = RemoteManager.get().readFileAsText("emailRecuperacion.txt");
+			texto = texto.replace("USUARIO", user.getUserName());
+			texto = texto.replace("TOKEN", token.getId());
+			texto = texto.replace("URL", RemoteManager.get().read("parametros.txt").getString("urlRecuperacion"));
+			String[] lineas = texto.split("\n");
+			smtp.send(user.getEmail(), 
+				lineas[0], 
+				lineas[1]);
 		}		
-		user = optUser.get();
-		Token token = new Token(user.getUserName());
-		this.tokenDAO.save(token);
-		Email smtp=new Email();
-		String texto = RemoteManager.get().readFileAsText("emailRecuperacion.txt");
-		texto = texto.replace("USUARIO", user.getUserName());
-		texto = texto.replace("TOKEN", token.getId());
-		texto = texto.replace("URL", RemoteManager.get().read("parametros.txt").getString("urlRecuperacion"));
-		String[] lineas = texto.split("\n");
-		smtp.send(user.getEmail(), 
-			lineas[0], 
-			lineas[1]);
-		return new ResponseEntity<>("Email enviado correctamente", HttpStatus.OK);
+		return new ResponseEntity<>("Si el correo está registrado, se enviará el email", HttpStatus.OK);
 	}
 	
 	public ResponseEntity<String> resetPassword(JSONObject jso) {

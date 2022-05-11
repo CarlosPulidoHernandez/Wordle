@@ -1,0 +1,2 @@
+¡Bienvenido a WORDLESI!", 
+Hola USUARIO, para confirmar el registro pulse en el siguiente enlace: URL/TOKEN

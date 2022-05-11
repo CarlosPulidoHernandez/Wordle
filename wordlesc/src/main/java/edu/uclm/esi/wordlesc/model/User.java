@@ -3,10 +3,16 @@ package edu.uclm.esi.wordlesc.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
+
 import java.util.Base64;
 
 @Entity
+@Table(indexes = {
+		@Index(unique = true, columnList = "email"),
+})
 public class User {
 
 	@Id
