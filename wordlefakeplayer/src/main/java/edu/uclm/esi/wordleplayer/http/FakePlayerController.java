@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import edu.uclm.esi.wordleplayer.dao.WordRepository;
 import edu.uclm.esi.wordleplayer.model.FakePlayer;
 import edu.uclm.esi.wordleplayer.model.Word;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("fakePlayer")
 public class FakePlayerController {
@@ -26,7 +28,7 @@ public class FakePlayerController {
 	@Autowired
 	private EntityManager entityManager;
 	
-	@Autowired
+	//@Autowired
 	public void indexar() {
 		List<Word> words = this.wordDAO.findAll();
 		for (int i=0; i<words.size(); i++) {
@@ -40,16 +42,14 @@ public class FakePlayerController {
 	
 	@GetMapping("/start")
 	public void start(HttpServletRequest request) {
-		try {
-			String scIp = request.getRemoteAddr();
-			
+		try {			
 			FakePlayer player = (FakePlayer) request.getSession().getAttribute("player");
 			if (player==null) {
 				player = new FakePlayer(this.wordDAO, this.entityManager);
 				request.getSession().setAttribute("player", player);
 			}
 			
-			player.doOpen(scIp);
+			player.doOpen();
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

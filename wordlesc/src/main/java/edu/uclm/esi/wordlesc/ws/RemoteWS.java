@@ -39,16 +39,28 @@ public class RemoteWS extends TextWebSocketHandler {
 		WrapperSession wrapperSession = RemoteManager.get().findWrapperSessionByWSId(session.getId());
 		String httpSessionId = wrapperSession.getUaSessionId();
 		Match match = matchService.find(idMatch);
-		match.guess(httpSessionId, testWord);
-		match.actualizarClientes(session.getId(), testWord, match);
+		if (match!=null) {
+			match.guess(httpSessionId, testWord);
+			match.actualizarClientes(session.getId(), testWord);
+			if (match.getWinner()!=null)
+				matchService.remove(idMatch);
+		}
 	}
 	
 	protected String getHttpSessionId(WebSocketSession session) {
+		String httpSessionId;
+		
+		String query =  session.getUri().getQuery();
+		if (query!=null) {
+			httpSessionId = query.substring(query.indexOf('=')+1);
+			return httpSessionId;
+		}
+		
 		HttpHeaders headers = session.getHandshakeHeaders();
 		List<String> cookies = headers.get("cookie");
 		for (String cookie : cookies) {
 			int posJSessionId = cookie.indexOf("JSESSIONID=");
-			String httpSessionId = cookie.substring(posJSessionId + 11);
+			httpSessionId = cookie.substring(posJSessionId + 11);
 			return httpSessionId;
 		}
 		return null;

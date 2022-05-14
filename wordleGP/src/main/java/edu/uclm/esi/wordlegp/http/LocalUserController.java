@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.uclm.esi.wordlegp.services.LocalUserService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("user")
 public class LocalUserController {

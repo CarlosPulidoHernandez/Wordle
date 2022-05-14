@@ -1,0 +1,9 @@
+edu\uclm\esi\wordleplayer\dao\WordRepository.class
+edu\uclm\esi\wordleplayer\model\Word.class
+edu\uclm\esi\wordleplayer\model\FakePlayer.class
+edu\uclm\esi\wordleplayer\http\Client.class
+edu\uclm\esi\wordleplayer\ws\WSClient.class
+edu\uclm\esi\wordleplayer\LanzadoraWordlePlayer.class
+edu\uclm\esi\wordleplayer\exceptionhandling\ExceptionHandlerControllerAdvice.class
+edu\uclm\esi\wordleplayer\exceptionhandling\ExceptionResponse.class
+edu\uclm\esi\wordleplayer\http\FakePlayerController.class

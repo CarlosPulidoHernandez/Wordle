@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import edu.uclm.esi.wordleplayer.dao.WordRepository;
 import edu.uclm.esi.wordleplayer.http.Client;
+import edu.uclm.esi.wordleplayer.http.LocalManager;
 import edu.uclm.esi.wordleplayer.ws.WSClient;
 
 public class FakePlayer {
@@ -37,10 +38,10 @@ public class FakePlayer {
 		this.uaSession = UUID.randomUUID().toString();
 		this.testWords = new JSONArray();
 		this.entityManager = entityManager;
+		this.serverIp = LocalManager.get().getConfiguration().getString("wordleSC");
 	}
 	
-	public void doOpen(String scIp) throws Exception {
-		this.serverIp = scIp;
+	public void doOpen() throws Exception {
 		String url = "http://" + this.serverIp + ":8000/match/open?uaSession=" + this.uaSession;
 		httpClient.sendGet(url);
 		

@@ -15,16 +15,17 @@ public class Match {
 	private String id;
 	private String playerA, playerB;
 	private String word;
-	private List<String> guessesA, guessesB;
+	private JSONArray guessesA, guessesB;
 	private WebSocketSession webSocketSessionA;
 	private WebSocketSession webSocketSessionB;
+	private String winner;
 	
 	public Match(String playerA, String word) {
 		this.id = UUID.randomUUID().toString();
 		this.playerA = playerA;
 		this.word = word.toUpperCase();
-		this.guessesA = new ArrayList<>();
-		this.guessesB = new ArrayList<>();
+		this.guessesA = new JSONArray();
+		this.guessesB = new JSONArray();
 		
 		WebSocketSession webSocketSession = RemoteManager.get().findWrapperSession(playerA).getWebSocketSession();
 		this.webSocketSessionA = webSocketSession;
@@ -49,10 +50,17 @@ public class Match {
 		
 		Guess guess = new Guess(this.word, test);
 		String state = guess.getState();
+		JSONObject jsoGuess = new JSONObject().
+				put("testWord", test).
+				put("state", state);
 		if (player.equals(this.playerA)) {
-			this.guessesA.add(state);
+			this.guessesA.put(jsoGuess);
+			if (state.equals("MMMMM"))
+				this.winner = "A";
 		} else {
-			this.guessesB.add(state);
+			this.guessesB.put(jsoGuess);
+			if (state.equals("MMMMM"))
+				this.winner = "B";
 		}
 	}
 
@@ -62,14 +70,6 @@ public class Match {
 	
 	public String getPlayerB() {
 		return playerB;
-	}
-	
-	public List<String> getGuessesA() {
-		return guessesA;
-	}
-	
-	public List<String> getGuessesB() {
-		return guessesB;
 	}
 	
 	private String getWinner(String quien, String testword) {
@@ -99,17 +99,16 @@ public class Match {
 		}
 	}
 
-	public void actualizarClientes(String wsIdJugador, String testWord, Match match) {
+	public void actualizarClientes(String wsIdJugador, String testWord) {
 		String quien = this.webSocketSessionA.getId().equals(wsIdJugador) ? "A" : "B";
-		String winner = match.getWinner(quien, testWord);
-		String state = this.webSocketSessionA.getId().equals(wsIdJugador) 
-				? this.guessesA.get(this.guessesA.size()-1) : this.guessesB.get(this.guessesB.size()-1);
+		
 		JSONObject jso = new JSONObject().
 				put("type", "UNO HA PUESTO, OYE").
 				put("quien", quien).
 				put("testWord", testWord).
-				put("state", state).
-				put("winner", winner);
+				put("guessesA", this.guessesA).
+				put("guessesB", this.guessesB).
+				put("winner", this.winner);
 		try {
 			TextMessage message = new TextMessage(jso.toString());
 			this.webSocketSessionA.sendMessage(message);
@@ -117,5 +116,9 @@ public class Match {
 		} catch (Exception e) {
 			System.err.println(e.toString());
 		}
+	}
+
+	public String getWinner() {
+		return winner;
 	}
 }

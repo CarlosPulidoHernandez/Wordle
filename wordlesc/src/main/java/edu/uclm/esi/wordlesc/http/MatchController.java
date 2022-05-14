@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import edu.uclm.esi.wordlesc.model.Match;
 import edu.uclm.esi.wordlesc.services.MatchService;
 import edu.uclm.esi.wordlesc.ws.WrapperSession;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("match")
 public class MatchController {
@@ -49,7 +51,7 @@ public class MatchController {
 		Match match = matchService.newMatch(uaSession, word);
 		return match;
 	}
-
+	
 	@PostMapping(value = "/guess")
 	public void guess(HttpSession session, @RequestBody Map<String, String> info, @RequestParam String uaSession) {
 		JSONObject jso = new JSONObject(info);

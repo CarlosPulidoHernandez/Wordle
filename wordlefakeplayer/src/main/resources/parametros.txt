@@ -2,6 +2,8 @@
 	"home" : "http://localhost",
 	"login" : "?ojr=login",
 	
+	"wordleSC" : "host.docker.internal",
+	
 	"email" : {
 		"host" : "smtp.gmail.com",
 		"startTTLS" : "true",

@@ -43,5 +43,9 @@ public class MatchService {
 	public Match find(String matchId) {
 		return this.inPlayMatches.get(matchId);
 	}
+	
+	public void remove(String idMatch) {
+		this.inPlayMatches.remove(idMatch);
+	}
 
 }

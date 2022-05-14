@@ -99,13 +99,13 @@ define([ 'knockout', 'appController', 'ojs/ojmodule-element-utils', 'accUtils',
 					self.status("Partida preparada")
 				} else if (data.type=="UNO HA PUESTO, OYE") {
 					if (data.quien=="A" && self.match().miRol=="A")
-						self.match().guessesA.push(dibujar(data))
+						self.match().guessesA.push(dibujar(data.guessesA[data.guessesA.length-1]))
 					else if (data.quien=="A" && self.match().miRol=="B")
-						self.match().guessesB.push(dibujar(data))
+						self.match().guessesB.push(dibujar(data.guessesA[data.guessesA.length-1]))
 					else if (data.quien=="B" && self.match().miRol=="A")
-						self.match().guessesB.push(dibujar(data))
+						self.match().guessesB.push(dibujar(data.guessesB[data.guessesB.length-1]))
 					else
-						self.match().guessesA.push(dibujar(data))
+						self.match().guessesA.push(dibujar(data.guessesB[data.guessesB.length-1]))
 						
 					if (data.winner) {
 						if (data.winner==self.match().miRol)
