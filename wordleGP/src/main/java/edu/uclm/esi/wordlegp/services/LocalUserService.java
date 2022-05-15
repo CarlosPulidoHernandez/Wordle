@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-
 import edu.uclm.esi.wordlegp.http.Client;
 import edu.uclm.esi.wordlegp.http.LocalManager;
 

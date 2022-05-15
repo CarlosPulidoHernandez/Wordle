@@ -1,7 +1,5 @@
 package edu.uclm.esi.wordlesc.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -13,9 +11,11 @@ import edu.uclm.esi.wordlesc.http.RemoteManager;
 
 public class Match {
 	private String id;
-	private String playerA, playerB;
+	private String playerA;
+	private String playerB;
 	private String word;
-	private JSONArray guessesA, guessesB;
+	private JSONArray guessesA;
+	private JSONArray guessesB;
 	private WebSocketSession webSocketSessionA;
 	private WebSocketSession webSocketSessionB;
 	private String winner;
@@ -70,16 +70,6 @@ public class Match {
 	
 	public String getPlayerB() {
 		return playerB;
-	}
-	
-	private String getWinner(String quien, String testword) {
-		if (testword.equalsIgnoreCase(word)) {
-			if (quien.equals("A"))
-				return "A";
-			else
-				return "B";
-		}
-		return null;
 	}
 	
 	private void matchReady() {

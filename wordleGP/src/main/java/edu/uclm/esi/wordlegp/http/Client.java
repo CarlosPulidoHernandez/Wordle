@@ -24,45 +24,45 @@ public class Client {
 	public JSONObject sendGet(String url) {
 		try(CloseableHttpClient client = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build()) {
 			HttpGet get = new HttpGet(url);
-			try(CloseableHttpResponse response = client.execute(get)) {
-				HttpEntity entity = response.getEntity();
-				Header[] hh = response.getAllHeaders();
-				for (int i=0; i<hh.length; i++)
-					System.out.println(hh[i].getName() + " = " + hh[i].getValue());
-				System.out.println("-----------------");
-				String responseText = EntityUtils.toString(entity);
-				if (responseText==null || responseText.length()==0)
-					return null;
-				return new JSONObject(responseText);
-			} catch (Exception e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-			}
-		} catch (IOException e1) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e1.getMessage());
+			CloseableHttpResponse response = client.execute(get);
+			
+			HttpEntity entity = response.getEntity();
+			Header[] hh = response.getAllHeaders();
+			for (int i=0; i<hh.length; i++)
+				System.out.println(hh[i].getName() + " = " + hh[i].getValue());
+			System.out.println("-----------------");
+			
+			String responseText = EntityUtils.toString(entity);
+			if (responseText==null || responseText.length()==0)
+				return null;
+			return new JSONObject(responseText);
+			
+		} catch (IOException ioException) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ioException.getMessage());
+		} catch (Exception exception) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
 		}
 	}
 	
 	public ResponseEntity<String> sendPost(String url, JSONObject payload) {
 		try(CloseableHttpClient client = HttpClientBuilder.create().setDefaultCookieStore(this.cookieStore).build()) {
 			HttpPost post = new HttpPost(url);
-			try {
-				HttpEntity entity = new StringEntity(payload.toString());
-				post.setEntity(entity);
-				post.setHeader("Accept", "application/json");
-				post.setHeader("Content-type", "application/json");			
-				CloseableHttpResponse response = client.execute(post);
-				entity = response.getEntity();						
-				String responseText = EntityUtils.toString(entity);
-				HttpStatus httpStatusCode = HttpStatus.valueOf(response.getStatusLine().getStatusCode());
-				return new ResponseEntity<>(responseText, httpStatusCode);
-			} catch (Exception exception) {
-				return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-			} finally {
-				client.close();
-			}
+			HttpEntity entity = new StringEntity(payload.toString());
+			post.setEntity(entity);
+			post.setHeader("Accept", "application/json");
+			post.setHeader("Content-type", "application/json");			
+			CloseableHttpResponse response = client.execute(post);
+			
+			entity = response.getEntity();						
+			String responseText = EntityUtils.toString(entity);
+			HttpStatus httpStatusCode = HttpStatus.valueOf(response.getStatusLine().getStatusCode());
+			return new ResponseEntity<>(responseText, httpStatusCode);
+			
 		} catch (IOException ioexception) {
 			return new ResponseEntity<>(ioexception.getMessage(), HttpStatus.BAD_REQUEST);
-		}
+		} catch (Exception exception) {
+			return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+		} 
 	}
 		
 }

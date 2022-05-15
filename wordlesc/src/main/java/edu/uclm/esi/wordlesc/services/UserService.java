@@ -3,22 +3,14 @@ package edu.uclm.esi.wordlesc.services;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.persistence.RollbackException;
-import javax.servlet.http.HttpSession;
-import javax.transaction.TransactionRolledbackException;
-
-import org.hibernate.exception.ConstraintViolationException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import edu.uclm.esi.wordlesc.dao.UserRepository;
 import edu.uclm.esi.wordlesc.http.RemoteManager;
-import edu.uclm.esi.wordlesc.dao.TokenRepository;
 import edu.uclm.esi.wordlesc.model.User;
 import edu.uclm.esi.wordlesc.model.Email;
 import edu.uclm.esi.wordlesc.model.Token;
@@ -26,12 +18,6 @@ import edu.uclm.esi.wordlesc.model.Token;
 
 @Service
 public class UserService {
-
-	@Autowired
-	private UserRepository userDAO;
-	
-	@Autowired
-	private TokenRepository tokenDAO;
 
 	public ResponseEntity<String> register(JSONObject jso) throws IOException {
 		User user = new User();
@@ -41,16 +27,16 @@ public class UserService {
 		if(jso.has("picture")) {
 			user.setPicture((jso.getString("picture")).getBytes());
 		}
-		Optional<User> optUser = this.userDAO.findById(user.getUserName());
+		Optional<User> optUser = RemoteManager.get().getUserRepository().findById(user.getUserName());
 		if (optUser.isPresent()) 
 			return new ResponseEntity<>("Usuario ya registrado", HttpStatus.BAD_REQUEST);
 		try {
-			this.userDAO.save(user);	
+			RemoteManager.get().getUserRepository().save(user);	
 		}catch(DataIntegrityViolationException exception) {
 			return new ResponseEntity<>("Usuario ya registrado", HttpStatus.BAD_REQUEST);
 		}
 		Token token = new Token(user.getUserName());
-		this.tokenDAO.save(token);
+		RemoteManager.get().getTokenRepository().save(token);
 		Email smtp=new Email();
 		String texto = RemoteManager.get().readFileAsText("emailBienvenida.txt");
 		texto = texto.replace("USUARIO", user.getUserName());
@@ -67,13 +53,13 @@ public class UserService {
 		String name = jso.getString("name");
 		String pwd = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("pwd"));
 		
-		Optional<User> optUser = this.userDAO.findById(name);
+		Optional<User> optUser = RemoteManager.get().getUserRepository().findById(name);
 		if (optUser.isPresent()) {
 			User user = optUser.get();
 			if (!user.getPwd().equals(pwd)) {
 				if(user.getWrongAttempts() < 3) {
 					user.increaseWrongAttempts();
-					this.userDAO.save(user);
+					RemoteManager.get().getUserRepository().save(user);
 				}
 				return new ResponseEntity<>("Credenciales no válidas", HttpStatus.FORBIDDEN);
 			}else {
@@ -82,7 +68,7 @@ public class UserService {
 				if (user.getConfirmationDate() == null)
 					return new ResponseEntity<>("Cuenta no validada", HttpStatus.FORBIDDEN);
 				user.setWrongAttempts(0);
-				this.userDAO.save(user);
+				RemoteManager.get().getUserRepository().save(user);
 			}
 		} else {
 			return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
@@ -96,7 +82,7 @@ public class UserService {
 		String newpwd1 = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("newpwd1"));
 		String newpwd2 = org.apache.commons.codec.digest.DigestUtils.sha512Hex(jso.getString("newpwd2"));
 				
-		Optional<User> optUser = this.userDAO.findById(name);
+		Optional<User> optUser = RemoteManager.get().getUserRepository().findById(name);
 		if (optUser.isPresent()) {
 			User user = optUser.get();
 			if (!user.getPwd().equals(pwd)) 
@@ -108,7 +94,7 @@ public class UserService {
 			if (newpwd1.length()<6)
 				return new ResponseEntity<>("La nueva contraseña debe de tener una longitud de 6 o más caracteres", HttpStatus.FORBIDDEN);
 			user.setPwd(jso.getString("newpwd1"));
-			this.userDAO.save(user);
+			RemoteManager.get().getUserRepository().save(user);
 			return new ResponseEntity<>("Contraseña cambiada correctamente", HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("Credenciales no válidas o cuenta no validada", HttpStatus.FORBIDDEN);
@@ -116,7 +102,7 @@ public class UserService {
 	}
 	
 	public ResponseEntity<String> validateToken(String tokenId) {
-		Optional<Token> optToken = this.tokenDAO.findById(tokenId);
+		Optional<Token> optToken = RemoteManager.get().getTokenRepository().findById(tokenId);
 		if (optToken.isPresent()) {
 			Token token = optToken.get();
 			long date = token.getDate();
@@ -124,11 +110,11 @@ public class UserService {
 			if (now>date+1000*60*60*24)
 				throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
 			String userName = token.getUserName();
-			Optional<User> optUser = this.userDAO.findById(userName);
+			Optional<User> optUser = RemoteManager.get().getUserRepository().findById(userName);
 			if(optUser.isPresent()) {
 				User user = optUser.get();
 				user.setConfirmationDate(now);
-				this.userDAO.save(user);
+				RemoteManager.get().getUserRepository().save(user);
 				return new ResponseEntity<>("{'Validacion':correcta}", HttpStatus.OK);
 			} else return new ResponseEntity<>("Usuario no encontrado", HttpStatus.NOT_FOUND);
 		} else return new ResponseEntity<>( "Token " + tokenId + " no encontrado", HttpStatus.NOT_FOUND);
@@ -137,11 +123,11 @@ public class UserService {
 	public ResponseEntity<String> createToken(JSONObject jso) throws IOException {
 		User user = new User();
 		user.setEmail(jso.getString("email"));
-		Optional<User> optUser = this.userDAO.findByEmail(user.getEmail());
+		Optional<User> optUser = RemoteManager.get().getUserRepository().findByEmail(user.getEmail());
 		if (optUser.isPresent()) {
 			user = optUser.get();
 			Token token = new Token(user.getUserName());
-			this.tokenDAO.save(token);
+			RemoteManager.get().getTokenRepository().save(token);
 			Email smtp=new Email();
 			String texto = RemoteManager.get().readFileAsText("emailRecuperacion.txt");
 			texto = texto.replace("USUARIO", user.getUserName());
@@ -159,7 +145,7 @@ public class UserService {
 		String tokenId = jso.getString("tokenId");
 		String newPwd1 = jso.getString("newpwd1");
 		String newPwd2 = jso.getString("newpwd2");
-		Optional<Token> optToken = this.tokenDAO.findById(tokenId);
+		Optional<Token> optToken = RemoteManager.get().getTokenRepository().findById(tokenId);
 		
 		if (optToken.isPresent()) {
 			Token token = optToken.get();
@@ -168,7 +154,7 @@ public class UserService {
 			if (now>date+1000*60*60*24)
 				return new ResponseEntity<>("Token caducado", HttpStatus.GONE);
 			String userName = token.getUserName();
-			Optional<User> optUser = this.userDAO.findById(userName);
+			Optional<User> optUser = RemoteManager.get().getUserRepository().findById(userName);
 			if(optUser.isPresent()) {
 				User user = optUser.get();
 				if (!newPwd1.equals(newPwd2)) 
@@ -176,8 +162,8 @@ public class UserService {
 				if (newPwd1.length()<6)
 					return new ResponseEntity<>("La nueva contraseña debe de tener una longitud de 6 o más caracteres", HttpStatus.FORBIDDEN);
 				user.setPwd(newPwd1);
-				this.userDAO.save(user);
-				this.tokenDAO.delete(token);
+				RemoteManager.get().getUserRepository().save(user);
+				RemoteManager.get().getTokenRepository().delete(token);
 				return new ResponseEntity<>("Contraseña cambiada correctamente", HttpStatus.OK);
 			}else return new ResponseEntity<>("Usuario no encontrado", HttpStatus.NOT_FOUND);
 		} else return new ResponseEntity<>( "Token " + tokenId + " no encontrado", HttpStatus.NOT_FOUND);

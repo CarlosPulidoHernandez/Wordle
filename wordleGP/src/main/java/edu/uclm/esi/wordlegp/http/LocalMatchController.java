@@ -1,9 +1,7 @@
 package edu.uclm.esi.wordlegp.http;
 
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import edu.uclm.esi.wordlegp.model.LocalMatch;
 import edu.uclm.esi.wordlegp.services.LocalMatchService;
 

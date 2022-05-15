@@ -6,13 +6,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import edu.uclm.esi.wordlesc.dao.TokenRepository;
+import edu.uclm.esi.wordlesc.dao.UserRepository;
 import edu.uclm.esi.wordlesc.ws.WrapperSession;
 
 @Component
 public class RemoteManager {
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private TokenRepository tokenRepository;
 	
 	private JSONObject configuration;
 	private ConcurrentHashMap<String, WrapperSession> wrapperSessionsByHttp = new ConcurrentHashMap<>();
@@ -87,5 +96,13 @@ public class RemoteManager {
 			fis.read(b);
 			return  new String(b);
 		 }
+	}
+	
+	public UserRepository getUserRepository() {
+		return this.userRepository;
+	}
+	
+	public TokenRepository getTokenRepository() {
+		return this.tokenRepository;
 	}
 }

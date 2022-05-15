@@ -40,16 +40,14 @@ public class MatchController {
 	public Match play(HttpSession session, @RequestParam String uaSession) {
 		System.out.println("play :: GC session: " + session.getId());
 		System.out.println("newMatch :: UA session.id: " + uaSession);
-		Match match = matchService.findPendingMatch(uaSession);
-		return match;
+		return matchService.findPendingMatch(uaSession);
 	}
 	
 	@GetMapping(value = "/newMatch/{word}")
 	public Match newMatch(HttpSession session, @PathVariable String word, @RequestParam String uaSession) {
 		System.out.println("newMatch :: GC session.id: " + session.getId());
 		System.out.println("newMatch :: UA session.id: " + uaSession);
-		Match match = matchService.newMatch(uaSession, word);
-		return match;
+		return matchService.newMatch(uaSession, word);
 	}
 	
 	@PostMapping(value = "/guess")

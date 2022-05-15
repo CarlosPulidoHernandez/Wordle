@@ -3,12 +3,9 @@ package edu.uclm.esi.wordlegp.services;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import edu.uclm.esi.wordlegp.dao.WordRepository;
+import edu.uclm.esi.wordlegp.http.LocalManager;
 import edu.uclm.esi.wordlegp.model.LocalMatch;
 import edu.uclm.esi.wordlegp.model.Word;
 
@@ -17,15 +14,12 @@ public class LocalMatchService {
 	
 	private ConcurrentHashMap<String, LocalMatch> matches = new ConcurrentHashMap<>();
 
-	@Autowired
-	private WordRepository wordDAO;
-
 	public String getRandomWord() {
-		int n = (int) this.wordDAO.count();
+		int n = (int) LocalManager.get().getWordRepository().count();
 		int posicion = new Random().nextInt(n-1);
 		
 		String word = null;
-		Optional<Word> optWord = this.wordDAO.findByPosicion(posicion);
+		Optional<Word> optWord = LocalManager.get().getWordRepository().findByPosicion(posicion);
 		if (optWord.isPresent())
 			word = optWord.get().getPalabra();
 		System.out.println("\n*******************\n" + word);

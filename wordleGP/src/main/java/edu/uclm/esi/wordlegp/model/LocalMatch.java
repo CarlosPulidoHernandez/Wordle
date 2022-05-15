@@ -10,7 +10,8 @@ public class LocalMatch {
 	private String word;
 	private String playerA;
 	private String playerB;
-	private List<String> guessesA, guessesB;
+	private List<String> guessesA;
+	private List<String> guessesB;
 	
 	public LocalMatch() {
 		this.guessesA = new ArrayList<>();

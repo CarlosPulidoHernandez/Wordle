@@ -2,14 +2,19 @@ package edu.uclm.esi.wordlegp.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import edu.uclm.esi.wordlegp.dao.WordRepository;
+
 @Component
 public class LocalManager {
+	
+	@Autowired
+	private WordRepository wordRepository;
 	
 	private JSONObject configuration;
 
@@ -57,5 +62,9 @@ public class LocalManager {
 			String s = new String(b);
 			return new JSONArray(s);
 		 }
+	}
+	
+	public WordRepository getWordRepository() {
+		return this.wordRepository;
 	}
 }
